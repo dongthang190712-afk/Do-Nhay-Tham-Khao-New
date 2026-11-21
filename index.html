@@ -468,7 +468,7 @@
     }
     .symbol-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
     .symbol-tile {
@@ -491,11 +491,12 @@
       transform: translateY(-1px);
     }
     .symbol-char {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 800;
       color: #ffffff;
-      line-height: 1.25;
-      word-break: break-all;
+      line-height: 1.3;
+      word-break: break-word;
+      white-space: pre-line;
     }
     .symbol-tag {
       font-size: 10px;
@@ -579,7 +580,7 @@
 
     @media (max-width: 480px) {
       .color-grid { grid-template-columns: 1fr; }
-      .symbol-grid { grid-template-columns: repeat(3, 1fr); }
+      .symbol-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -742,7 +743,7 @@
     <!-- KHOẢNG TRỐNG TÀNG HÌNH TRONG TÊN FF -->
     <div class="symbol-section-box">
       <div class="symbol-sub-title">
-        <span>👻 Khoảng Trống Tàng Hình Tên FF (Dấu cách không lỗi)</span>
+        <span>👻 Khoảng Trống Tàng Hình Tên FF (Khoảng trống thường & lớn)</span>
       </div>
       <div id="blankSpacesList" class="space-list"></div>
     </div>
@@ -788,14 +789,19 @@
 
   const FF_BLANK_SPACES = [
     {
+      title: "Khoảng Trống Thường (Thin Space)",
+      desc: "Dấu cách tàng hình chuẩn trong ảnh — gọn, ít tốn độ dài tên",
+      value: "\u2009"
+    },
+    {
+      title: "Khoảng Trống Lớn (Dấu Cách Lớn)",
+      desc: "Tạo khoảng cách rộng rõ ràng giữa các chữ hoặc cụm kí tự",
+      value: "\u3164\u2800\u2003"
+    },
+    {
       title: "Khoảng Trống Chuẩn Tên FF (Hangul Filler)",
       desc: "Phổ biến nhất để tạo dấu cách giữa các chữ trong tên Free Fire",
       value: "\u3164"
-    },
-    {
-      title: "Khoảng Trống Nhỏ (Thin Space)",
-      desc: "Dấu cách hẹp đẹp mắt, ít tốn độ dài tên nhân vật",
-      value: "\u2009"
     },
     {
       title: "Khoảng Trống Vừa (Braille Blank)",
@@ -806,15 +812,34 @@
       title: "Khoảng Trống Rộng (Em Space)",
       desc: "Tạo khoảng hở rộng giữa tên Clan và tên nhân vật",
       value: "\u2003"
-    },
-    {
-      title: "Khoảng Trống Kép (2 Dấu Cách Chuẩn)",
-      desc: "Copy 1 lần ra sẵn 2 khoảng trống tàng hình liên tiếp",
-      value: "\u3164\u3164"
     }
   ];
 
   const FF_SYMBOL_GROUPS = [
+    {
+      title: "🖼️ Full Kí Tự Theo Ảnh Của Bạn",
+      items: [
+        "ᒡᒢ", "ᘔ", "'w'", "亗", "✿", "ᏝᏝᏝᏝᏝᏝᏝᏝᏝᏝᏝᏝᏝ", "", "ᘎ", "ツ",
+        "☠️", "宗", "모", "·°+· ଳ*.·°*:·", "ム", "༄ᶦᶰᵈ᭄✿", "ᒄ",
+        "『CT』 ¦ 優TiD\n亗", "ﾑ", "༄ᶦᶰᵈ᭄✿", "༂", "ヽ", "⌒ᶦᵈᵒᶫ",
+        "乂", "『", "』", "☯", "☺", "ღ", "VNシ", "👁️",
+        "◡", "××", "☂️", "三★", "•́", "★彡", "乂", "⇄",
+        "❤️", "ᵛᶻ.'/", "_ᒻ_", "Ꮺ", "Ꮭ", "〰", "Ꮭ", "IAM",
+        "❄️", "♡", "優", "🌀", "cm", "☆",
+        "__Ꮭᒡᒢ__", "Ꮭ", "♕", "☭", "♪", "•", "PROシ", "ツ",
+        "✝️", "¦", "ᒡᒢ", "TM", "☬", "︵", "□ □°.",
+        "ت", "♚", "✏️", "✦", "_✿", "♥", "三⁰°", "「",
+        "•༄ᶦᶰᵈ•TheKing•༄ᶦᶰᵈ•", "Ꮭᒡᒢ", "⁰°彡", "ᏝᏝ", "SEA Nhi女□"
+      ]
+    },
+    {
+      title: "🎀 Nơ Hoa Hai Chữ X & Cánh Đôi (乂 ... 乂)",
+      items: [
+        "乂‿乂", "乂◡乂", "乂 ‿ 乂", "乂•乂", "乂_乂", "乂^乂",
+        "乂°乂", "乂✦乂", "乂★乂", "乂✧乂", "乂≧▽≦乂", "乂•̀ᴗ•́乂",
+        "乂♡乂", "乂⚡乂", "乂🔥乂", "乂亗乂", "乂么乂", "乂乡乂"
+      ]
+    },
     {
       title: "🔫 Súng, Kiếm & Vũ Khí FF",
       items: ["▄︻デ══━一", "︻デ═一", "╾━╤デ╦︻", "▄︻̷̿┻̿═━一", "︻╦̵̵͇̿̿̿̿══╤─", "⚔️", "🗡️", "🔫", "🛡️", "🏹", "💣", "🎯"]
@@ -1019,11 +1044,12 @@
         if (tag) tag.textContent = "COPY";
       }, 1100);
     }
-    showSymbolToast(`Đã chèn & sao chép kí tự: ${sym}`);
+    const cleanLogSym = sym.replace(/\n/g, " / ");
+    showSymbolToast(`Đã chèn & sao chép kí tự: ${cleanLogSym}`);
 
     sendDiscordLog("✨ SAO CHÉP KÍ TỰ ĐẶC BIỆT FF", [
       { name: "📂 Nhóm kí tự", value: `\`${group.title}\``, inline: true },
-      { name: "🔣 Kí tự đã sao chép", value: `\`${sym}\``, inline: true }
+      { name: "🔣 Kí tự đã sao chép", value: `\`${cleanLogSym}\``, inline: true }
     ], 1947988);
   }
 
