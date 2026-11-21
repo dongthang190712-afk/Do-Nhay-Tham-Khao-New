@@ -285,7 +285,7 @@
       color: #061018;
     }
 
-    /* KHUNG Ở DƯỚI: NHẬP CHỮ + TỰ CHỌN 1 MÀU -> RA CODE MÀU CHỮ & GỬI DISCORD */
+    /* KHUNG Ở DƯỚI: MỖI CHỮ / KÝ TỰ CHỌN 1 MÀU RIÊNG -> GỬI DISCORD RỒI MỚI HIỆN Ô SAO CHÉP */
     .custom-color-box {
       margin-top: 22px;
       background: #101926;
@@ -299,19 +299,68 @@
       color: #00f0ff;
       margin: 0 0 10px;
     }
+    .char-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .char-chip {
+      background: #080d14;
+      border: 1.5px solid #24384f;
+      border-radius: 10px;
+      padding: 7px 11px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.12s, border-color 0.12s;
+    }
+    .char-chip:hover {
+      transform: translateY(-1px);
+    }
+    .char-chip.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+    }
+    .char-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      flex-shrink: 0;
+    }
     .picker-row {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-top: 6px;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
     }
     .picker-row input[type="color"] {
-      width: 56px;
-      height: 46px;
+      width: 54px;
+      height: 44px;
       padding: 3px;
       border-radius: 10px;
       cursor: pointer;
       flex-shrink: 0;
+    }
+    .mini-btn {
+      background: #162232;
+      color: #e6f7ff;
+      border: 1px solid #2e435e;
+      border-radius: 9px;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .mini-btn:hover {
+      border-color: #00f0ff;
+      color: #00f0ff;
     }
     .quick-swatches {
       display: flex;
@@ -320,8 +369,8 @@
       margin-top: 10px;
     }
     .quick-dot {
-      width: 26px;
-      height: 26px;
+      width: 25px;
+      height: 25px;
       border-radius: 8px;
       border: 2px solid rgba(255, 255, 255, 0.25);
       cursor: pointer;
@@ -333,15 +382,19 @@
       border-color: #ffffff;
     }
     .output-code-card {
+      display: none;
       margin-top: 14px;
       background: #080d14;
       border: 1px solid #1f334a;
       border-radius: 12px;
       padding: 12px 14px;
     }
+    .output-code-card.show {
+      display: block;
+    }
     .preview-line {
-      font-size: 17px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
       padding-bottom: 10px;
       margin-bottom: 10px;
       border-bottom: 1px solid #172436;
@@ -355,7 +408,7 @@
     }
     .generated-ff-code {
       font-family: Consolas, monospace;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 800;
       color: #00f0ff;
       word-break: break-all;
@@ -533,31 +586,34 @@
 
     <div id="colorGrid" class="color-grid"></div>
 
-    <!-- PHẦN Ở DƯỚI: NHẬP CHỮ MUỐN DÙNG + TỰ CHỌN 1 MÀU -> RA CODE & CHUYỂN VỀ DISCORD -->
+    <!-- PHẦN Ở DƯỚI: MỖI CHỮ / KÝ TỰ ĐƯỢC CHỌN 1 MÀU RIÊNG -> GỬI DISCORD RỒI MỚI HIỆN Ô SAO CHÉP -->
     <div class="custom-color-box">
-      <h3 class="custom-color-title">✍️ Tạo Code Màu Chữ Theo Ý Bạn</h3>
+      <h3 class="custom-color-title">✍️ Mỗi Chữ 1 Màu Tùy Ý</h3>
 
       <label for="customFfText" style="font-size:13px; margin-top:6px;">Nhập chữ bạn muốn:</label>
-      <input type="text" id="customFfText" placeholder="Ví dụ: Z E U S • PRO FF..." oninput="updateCustomColorOutput()" />
+      <input type="text" id="customFfText" placeholder="Ví dụ: ZEUS hoặc FF VIP..." oninput="syncCharPalette()" />
 
-      <label for="customColorPicker" style="font-size:13px; margin-top:12px;">Tự chọn 1 màu:</label>
+      <div id="charPaletteLabel" style="font-size:12.5px; color:#a9cce3; margin-top:12px;">Bấm vào từng chữ/ký tự bên dưới để chọn màu riêng cho chữ đó:</div>
+      <div id="charChipsList" class="char-list"></div>
+
       <div class="picker-row">
-        <input type="color" id="customColorPicker" value="#00f0ff" oninput="updateCustomColorOutput()" />
-        <span id="pickedHexLabel" style="font-family:Consolas,monospace; font-size:14px; font-weight:800; color:#00f0ff;">Mã màu: [00F0FF]</span>
+        <input type="color" id="singleCharColorPicker" value="#00f0ff" oninput="applyColorToSelectedChar(this.value)" />
+        <span id="selectedCharInfo" style="font-size:13px; font-weight:800; color:#00f0ff;">Đang chọn: --</span>
+        <button type="button" class="mini-btn" onclick="rainbowizeChars()">🌈 Đổi màu mỗi chữ</button>
       </div>
 
       <div id="quickSwatches" class="quick-swatches"></div>
 
-      <div class="output-code-card">
-        <div id="customColorPreview" class="preview-line" style="color:#00f0ff;">Z E U S • PRO FF</div>
+      <button type="button" id="btnCreateFfCode" class="primary-action" style="margin-top:14px; padding:12px;" onclick="createCodeAndNotifyDiscord()">TẠO CODE MÀU CHỮ</button>
+      <p id="customColorStatus"></p>
+
+      <div id="customOutputCard" class="output-code-card">
+        <div id="customColorPreview" class="preview-line"></div>
         <div class="code-copy-bar">
-          <span id="generatedFfTextCode" class="generated-ff-code">[00F0FF]Z E U S • PRO FF</span>
-          <button type="button" id="btnCopyCustomFf" class="cell-copy-btn" onclick="copyAndSendCustomFf()">COPY & GỬI</button>
+          <span id="generatedFfTextCode" class="generated-ff-code"></span>
+          <button type="button" id="btnCopyCustomFf" class="cell-copy-btn" onclick="copyCustomFf()">COPY</button>
         </div>
       </div>
-
-      <button type="button" class="primary-action" style="margin-top:12px; padding:12px;" onclick="sendCustomColorToDiscord('Tạo code màu chữ')">TẠO CODE & GỬI VỀ DISCORD</button>
-      <p id="customColorStatus"></p>
     </div>
   </div>
 </div>
@@ -596,6 +652,8 @@
     { name: "Xám khói", hex: "#64748B", code: "[64748B]" }
   ];
 
+  const DEFAULT_RAINBOW_HEXES = ["#FF0000", "#FF7A00", "#FFD700", "#00FF88", "#00F0FF", "#2979FF", "#B84DFF", "#FF2E93"];
+
   if (window.emailjs) {
     emailjs.init({ publicKey: PUBLIC_KEY });
   }
@@ -604,6 +662,9 @@
   let currentEmail = "";
   let generatedOTP = "";
   let latestSensiData = {};
+  let latestCustomFfCode = "";
+  let perCharItems = []; // [{ ch: "Z", hex: "#FF0000" }, ...]
+  let selectedCharIndex = 0;
 
   const blockedPrefixes = ['test', 'abc', 'asdf', 'qwerty', '123', 'fake', 'none', 'noemail', 'admin'];
   const blockedDomains = ['mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'yopmail.com'];
@@ -628,95 +689,186 @@
     const swatchesEl = document.getElementById('quickSwatches');
     if (swatchesEl) {
       swatchesEl.innerHTML = FF_COLOR_CODES.slice(0, 12).map(item => `
-        <button type="button" class="quick-dot" title="${item.name} ${item.code}" style="background:${item.hex};" onclick="pickPresetColor('${item.hex}')"></button>
+        <button type="button" class="quick-dot" title="${item.name} ${item.code}" style="background:${item.hex};" onclick="applyColorToSelectedChar('${item.hex}')"></button>
       `).join('');
     }
-
-    updateCustomColorOutput();
   }
 
-  function pickPresetColor(hex) {
-    const picker = document.getElementById('customColorPicker');
-    if (picker) {
-      picker.value = hex;
-      updateCustomColorOutput();
-    }
+  function hideCustomOutputOnEdit() {
+    document.getElementById('customOutputCard')?.classList.remove('show');
+    latestCustomFfCode = "";
   }
 
-  function getCustomFfPayload() {
-    const textInput = document.getElementById('customFfText').value.trim();
-    const displayText = textInput || "Z E U S • PRO FF";
-    const hexUpper = (document.getElementById('customColorPicker').value || "#00f0ff").replace("#", "").toUpperCase();
-    const ffTag = `[${hexUpper}]`;
-    const fullCode = `${ffTag}${displayText}`;
-    return { textInput, displayText, hexUpper, ffTag, fullCode };
+  function syncCharPalette() {
+    const raw = document.getElementById('customFfText').value;
+    const chars = Array.from(raw);
+    const oldMap = new Map();
+
+    perCharItems.forEach((item, idx) => {
+      oldMap.set(`${idx}:${item.ch}`, item.hex);
+    });
+
+    perCharItems = chars.map((ch, idx) => {
+      const fallbackHex = DEFAULT_RAINBOW_HEXES[idx % DEFAULT_RAINBOW_HEXES.length];
+      return {
+        ch,
+        hex: oldMap.get(`${idx}:${ch}`) || fallbackHex
+      };
+    });
+
+    if (selectedCharIndex >= perCharItems.length) {
+      selectedCharIndex = Math.max(0, perCharItems.length - 1);
+    }
+
+    hideCustomOutputOnEdit();
+    renderCharChips();
   }
 
-  function updateCustomColorOutput() {
-    const { displayText, hexUpper, ffTag, fullCode } = getCustomFfPayload();
-    const previewEl = document.getElementById('customColorPreview');
-    const codeEl = document.getElementById('generatedFfTextCode');
-    const hexLabelEl = document.getElementById('pickedHexLabel');
+  function renderCharChips() {
+    const listEl = document.getElementById('charChipsList');
+    const infoEl = document.getElementById('selectedCharInfo');
+    const pickerEl = document.getElementById('singleCharColorPicker');
+    if (!listEl || !infoEl || !pickerEl) return;
 
-    if (previewEl) {
-      previewEl.style.color = `#${hexUpper}`;
-      previewEl.textContent = displayText;
+    if (perCharItems.length === 0) {
+      listEl.innerHTML = `<span style="font-size:12px; color:#64748b;">Chưa có chữ nào. Hãy nhập chữ ở ô trên.</span>`;
+      infoEl.textContent = "Đang chọn: --";
+      return;
     }
-    if (codeEl) {
-      codeEl.textContent = fullCode;
-    }
-    if (hexLabelEl) {
-      hexLabelEl.textContent = `Mã màu: ${ffTag}`;
-    }
+
+    listEl.innerHTML = perCharItems.map((item, idx) => {
+      const labelCh = item.ch === " " ? "␣" : escapeHtml(item.ch);
+      const isSelected = idx === selectedCharIndex ? "active" : "";
+      return `
+        <button type="button" class="char-chip ${isSelected}" style="color:${item.hex};" onclick="selectChar(${idx})">
+          <span class="char-dot" style="background:${item.hex};"></span>
+          <span>${labelCh}</span>
+        </button>
+      `;
+    }).join('');
+
+    const cur = perCharItems[selectedCharIndex];
+    const shownChar = cur.ch === " " ? "[Khoảng trắng]" : cur.ch;
+    const hexUpper = cur.hex.replace("#", "").toUpperCase();
+    pickerEl.value = cur.hex.toLowerCase();
+    infoEl.style.color = cur.hex;
+    infoEl.textContent = `Chữ "${shownChar}" → [${hexUpper}]`;
   }
 
-  function sendCustomColorToDiscord(actionName) {
-    const { textInput, displayText, hexUpper, ffTag, fullCode } = getCustomFfPayload();
+  function selectChar(idx) {
+    if (idx < 0 || idx >= perCharItems.length) return;
+    selectedCharIndex = idx;
+    renderCharChips();
+  }
+
+  function applyColorToSelectedChar(hexValue) {
+    if (perCharItems.length === 0) return;
+    const normalized = hexValue.toLowerCase();
+    perCharItems[selectedCharIndex].hex = normalized;
+    hideCustomOutputOnEdit();
+    renderCharChips();
+  }
+
+  function rainbowizeChars() {
+    if (perCharItems.length === 0) return;
+    perCharItems = perCharItems.map((item, idx) => ({
+      ch: item.ch,
+      hex: DEFAULT_RAINBOW_HEXES[idx % DEFAULT_RAINBOW_HEXES.length].toLowerCase()
+    }));
+    hideCustomOutputOnEdit();
+    renderCharChips();
+  }
+
+  function buildMultiColorFfCode(items) {
+    let ffCode = "";
+    let prevHex = "";
+    for (const item of items) {
+      const hexUpper = item.hex.replace("#", "").toUpperCase();
+      if (hexUpper !== prevHex) {
+        ffCode += `[${hexUpper}]`;
+        prevHex = hexUpper;
+      }
+      ffCode += item.ch;
+    }
+    return ffCode;
+  }
+
+  function buildMultiColorPreviewHtml(items) {
+    return items.map(item => {
+      const displayCh = item.ch === " " ? "&nbsp;" : escapeHtml(item.ch);
+      return `<span style="color:${item.hex};">${displayCh}</span>`;
+    }).join('');
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  async function createCodeAndNotifyDiscord() {
     const statusEl = document.getElementById('customColorStatus');
+    const btn = document.getElementById('btnCreateFfCode');
+    const outputCard = document.getElementById('customOutputCard');
 
-    if (!textInput) {
-      if (statusEl) {
-        statusEl.style.color = "#ff6b86";
-        statusEl.textContent = "Vui lòng nhập chữ bạn muốn dùng trước khi gửi!";
-      }
+    outputCard.classList.remove('show');
+
+    if (perCharItems.length === 0 || perCharItems.every(i => i.ch.trim() === "")) {
+      statusEl.style.color = "#ff6b86";
+      statusEl.textContent = "Vui lòng nhập chữ bạn muốn tạo code trước!";
       return;
     }
 
-    if (statusEl) {
-      statusEl.style.color = "#00f0ff";
-      statusEl.textContent = `Đã tạo code ${fullCode} và chuyển thông tin về Discord!`;
-    }
+    const fullCode = buildMultiColorFfCode(perCharItems);
+    const colorSummary = perCharItems
+      .map(i => `${i.ch === " " ? "␣" : i.ch}:[${i.hex.replace("#", "").toUpperCase()}]`)
+      .join(" ");
 
-    sendDiscordLog(`🎨 ${actionName.toUpperCase()} FF`, [
-      { name: "✍️ Chữ nhập", value: `\`${displayText}\``, inline: true },
-      { name: "🎨 Mã màu", value: `\`${ffTag}\``, inline: true },
-      { name: "📋 Code đầu ra", value: `\`\`\`${fullCode}\`\`\``, inline: false }
-    ], parseInt(hexUpper, 16) || 1947988);
+    btn.disabled = true;
+    btn.textContent = "Đang gửi thông báo Discord...";
+    statusEl.style.color = "#00f0ff";
+    statusEl.textContent = "Đang gửi thông báo về Discord trước khi mở ô sao chép...";
+
+    await sendDiscordLog("🎨 TẠO CODE MÀU TỪNG CHỮ FF", [
+      { name: "✍️ Chuỗi chữ", value: `\`${perCharItems.map(i => i.ch).join("")}\``, inline: true },
+      { name: "🌈 Màu từng chữ", value: `\`\`\`${colorSummary}\`\`\``, inline: false },
+      { name: "📋 Code tạo ra", value: `\`\`\`${fullCode}\`\`\``, inline: false }
+    ], 1947988);
+
+    latestCustomFfCode = fullCode;
+    document.getElementById('customColorPreview').innerHTML = buildMultiColorPreviewHtml(perCharItems);
+    document.getElementById('generatedFfTextCode').textContent = fullCode;
+    document.getElementById('btnCopyCustomFf').textContent = "COPY";
+    document.getElementById('btnCopyCustomFf').classList.remove('copied');
+
+    outputCard.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = "TẠO CODE MÀU CHỮ";
+    statusEl.style.color = "#00f0ff";
+    statusEl.textContent = "Đã gửi thông báo về Discord! Bạn có thể sao chép code bên dưới.";
   }
 
-  function copyAndSendCustomFf() {
-    const { textInput, fullCode } = getCustomFfPayload();
-    if (!textInput) {
-      const statusEl = document.getElementById('customColorStatus');
-      if (statusEl) {
-        statusEl.style.color = "#ff6b86";
-        statusEl.textContent = "Hãy nhập chữ bạn muốn dùng trước nhé!";
-      }
-      return;
-    }
+  function copyCustomFf() {
+    const statusEl = document.getElementById('customColorStatus');
+    if (!latestCustomFfCode) return;
 
-    navigator.clipboard?.writeText(fullCode).catch(() => {});
+    navigator.clipboard?.writeText(latestCustomFfCode).catch(() => {});
     const btn = document.getElementById('btnCopyCustomFf');
     if (btn) {
       btn.textContent = "ĐÃ CHÉP";
       btn.classList.add('copied');
       setTimeout(() => {
-        btn.textContent = "COPY & GỬI";
+        btn.textContent = "COPY";
         btn.classList.remove('copied');
       }, 1300);
     }
 
-    sendCustomColorToDiscord("Copy & tạo code màu chữ");
+    if (statusEl) {
+      statusEl.style.color = "#00f0ff";
+      statusEl.textContent = `Đã sao chép: ${latestCustomFfCode}`;
+    }
   }
 
   function copySingleColorCode(idx) {
@@ -733,11 +885,6 @@
         btn.classList.remove('copied');
       }, 1300);
     }
-
-    sendDiscordLog("🎨 CHỌN CODE MÀU FF", [
-      { name: "🌈 Tên màu", value: `\`${item.name}\``, inline: true },
-      { name: "🏷️ Code màu", value: `\`${item.code}\``, inline: true }
-    ], parseInt(item.hex.replace("#", ""), 16) || 1947988);
   }
 
   function openScreen(target) {
@@ -970,6 +1117,7 @@
   }
 
   renderColorCells();
+  syncCharPalette();
 </script>
 
 </body>
