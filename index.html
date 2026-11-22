@@ -289,7 +289,7 @@
       color: #061018;
     }
 
-    /* KHUNG Ở DƯỚI: MỖI CHỮ / KÝ TỰ CHỌN 1 MÀU RIÊNG -> GỬI DISCORD RỒI MỚI HIỆN Ô SAO CHÉP */
+    /* KHUNG Ở DƯỚI: MỖI CHỮ / KÝ TỰ CHỌN 1 MÀU RIÊNG */
     .custom-color-box {
       margin-top: 22px;
       background: #101926;
@@ -366,6 +366,11 @@
       border-color: #00f0ff;
       color: #00f0ff;
     }
+    .mini-btn.active-mode {
+      background: #00e5ff;
+      color: #061018;
+      border-color: #00e5ff;
+    }
     .quick-swatches {
       display: flex;
       flex-wrap: wrap;
@@ -440,6 +445,45 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .zoom-max-stage {
+      background: #060b12;
+      border: 1.5px solid rgba(0, 240, 255, 0.55);
+      box-shadow: inset 0 0 22px rgba(0, 229, 255, 0.12);
+      border-radius: 13px;
+      padding: 18px 14px;
+      min-height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow-x: auto;
+      margin-bottom: 12px;
+    }
+    .zoom-max-text {
+      font-size: clamp(28px, 7.5vw, 44px);
+      font-weight: 900;
+      line-height: 1.25;
+      color: #00f0ff;
+      text-shadow: 0 0 16px rgba(0, 240, 255, 0.55);
+      word-break: break-word;
+      white-space: pre-wrap;
+      transition: font-size 0.15s ease, letter-spacing 0.15s ease;
+    }
+    .zoom-max-text.spaced {
+      letter-spacing: 5px;
+    }
+    .zoom-max-text.ultra-max {
+      font-size: clamp(36px, 10vw, 56px);
+      padding: 8px 4px;
+    }
+    .zoom-controls-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
     }
     .space-list {
       display: flex;
@@ -691,7 +735,7 @@
 
     <div id="colorGrid" class="color-grid"></div>
 
-    <!-- PHẦN Ở DƯỚI: MỖI CHỮ / KÝ TỰ ĐƯỢC CHỌN 1 MÀU RIÊNG -> GỬI DISCORD RỒI MỚI HIỆN Ô SAO CHÉP -->
+    <!-- PHẦN Ở DƯỚI: MỖI CHỮ / KÝ TỰ ĐƯỢC CHỌN 1 MÀU RIÊNG -->
     <div class="custom-color-box">
       <h3 class="custom-color-title">✍️ Mỗi Chữ 1 Màu Tùy Ý</h3>
 
@@ -727,12 +771,22 @@
     <button class="back-btn" onclick="openScreen('menu')">← Quay lại Menu</button>
     <h2 class="section-heading">✨ KÍ TỰ & KHOẢNG TRỐNG FF ✨</h2>
 
-    <!-- KHUNG GHÉP TÊN NHANH -->
+    <!-- KHUNG GHÉP TÊN & PHÓNG TO CHỮ MAXIMUM -->
     <div class="symbol-section-box">
       <div class="symbol-sub-title">
-        <span>🛠️ Ô Ghép Tên Nhanh (Bấm kí tự bên dưới để chèn hoặc copy)</span>
+        <span>🔍 Phóng To Chữ Maximum & Ghép Tên</span>
       </div>
-      <input type="text" id="ffNameDraftInput" placeholder="Nhập tên hoặc bấm vào các kí tự / khoảng trống bên dưới..." />
+
+      <div class="zoom-max-stage">
+        <div id="zoomMaxPreviewText" class="zoom-max-text">Z E U S</div>
+      </div>
+
+      <div class="zoom-controls-row">
+        <button type="button" id="btnToggleUltraMax" class="mini-btn" onclick="toggleUltraMaxZoom()">🔎 Phóng to FULL MAX</button>
+        <button type="button" id="btnToggleLetterSpacing" class="mini-btn active-mode" onclick="toggleSpacedZoom()">↔ Giãn chữ (Z E U S)</button>
+      </div>
+
+      <input type="text" id="ffNameDraftInput" placeholder="Nhập tên hoặc bấm vào các kí tự / khoảng trống bên dưới..." oninput="updateZoomMaxPreview()" />
       <div class="name-builder-row">
         <button type="button" class="primary-action" style="margin-top:0; padding:11px;" onclick="copyDraftFfName()">📋 COPY TÊN ĐÃ GHÉP</button>
         <button type="button" class="mini-btn" onclick="clearDraftFfName()">Xóa</button>
@@ -876,9 +930,35 @@
   let perCharItems = [];
   let selectedCharIndex = 0;
   let cachedUserIp = "";
+  let isUltraMaxZoom = false;
+  let isSpacedZoom = true;
 
   const blockedPrefixes = ['test', 'abc', 'asdf', 'qwerty', '123', 'fake', 'none', 'noemail', 'admin'];
   const blockedDomains = ['mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'yopmail.com'];
+
+  function updateZoomMaxPreview() {
+    const input = document.getElementById('ffNameDraftInput');
+    const previewEl = document.getElementById('zoomMaxPreviewText');
+    if (!input || !previewEl) return;
+    const val = input.value;
+    previewEl.textContent = val || "Z E U S";
+  }
+
+  function toggleUltraMaxZoom() {
+    isUltraMaxZoom = !isUltraMaxZoom;
+    const previewEl = document.getElementById('zoomMaxPreviewText');
+    const btn = document.getElementById('btnToggleUltraMax');
+    if (previewEl) previewEl.classList.toggle('ultra-max', isUltraMaxZoom);
+    if (btn) btn.classList.toggle('active-mode', isUltraMaxZoom);
+  }
+
+  function toggleSpacedZoom() {
+    isSpacedZoom = !isSpacedZoom;
+    const previewEl = document.getElementById('zoomMaxPreviewText');
+    const btn = document.getElementById('btnToggleLetterSpacing');
+    if (previewEl) previewEl.classList.toggle('spaced', isSpacedZoom);
+    if (btn) btn.classList.toggle('active-mode', isSpacedZoom);
+  }
 
   async function getUserIpAddress() {
     if (cachedUserIp) return cachedUserIp;
@@ -993,6 +1073,7 @@
     input.focus();
     const nextPos = start + text.length;
     input.setSelectionRange(nextPos, nextPos);
+    updateZoomMaxPreview();
   }
 
   function insertIntoDraftName(idx, isSpace) {
@@ -1071,11 +1152,13 @@
   function clearDraftFfName() {
     const input = document.getElementById('ffNameDraftInput');
     if (input) input.value = "";
+    updateZoomMaxPreview();
     showSymbolToast("Đã xóa ô ghép tên.");
   }
 
   function hideCustomOutputOnEdit() {
     document.getElementById('customOutputCard')?.classList.remove('show');
+    document.getElementById('customColorStatus').textContent = "";
     latestCustomFfCode = "";
   }
 
@@ -1194,6 +1277,7 @@
     const outputCard = document.getElementById('customOutputCard');
 
     outputCard.classList.remove('show');
+    statusEl.textContent = "";
 
     if (perCharItems.length === 0 || perCharItems.every(i => i.ch.trim() === "")) {
       statusEl.style.color = "#ff6b86";
@@ -1207,9 +1291,6 @@
       .join(" ");
 
     btn.disabled = true;
-    btn.textContent = "Đang gửi thông báo Discord...";
-    statusEl.style.color = "#00f0ff";
-    statusEl.textContent = "Đang gửi thông báo về Discord trước khi mở ô sao chép...";
 
     await sendDiscordLog("🎨 TẠO CODE MÀU TỪNG CHỮ FF", [
       { name: "✍️ Chuỗi chữ", value: `\`${perCharItems.map(i => i.ch).join("")}\``, inline: true },
@@ -1225,9 +1306,6 @@
 
     outputCard.classList.add('show');
     btn.disabled = false;
-    btn.textContent = "TẠO CODE MÀU CHỮ";
-    statusEl.style.color = "#00f0ff";
-    statusEl.textContent = "Đã gửi thông báo về Discord! Bạn có thể sao chép code bên dưới.";
   }
 
   function copyCustomFf() {
@@ -1513,6 +1591,7 @@
   renderColorCells();
   syncCharPalette();
   renderSymbolsAndSpaces();
+  updateZoomMaxPreview();
   getUserIpAddress();
 </script>
 
