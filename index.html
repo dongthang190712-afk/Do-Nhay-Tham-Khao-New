@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FREE FIRE PORTAL</title>
+  <title>FREE FIRE PORTAL — Lễ Hội Tuyết Giáng Sinh</title>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     * { box-sizing: border-box; }
@@ -17,6 +17,50 @@
       justify-content: center;
       min-height: 100vh;
     }
+
+    /* Tuyết rơi liên tục phủ toàn màn hình, không chặn thao tác */
+    .snow-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
+    .snowflake {
+      position: absolute;
+      top: -24px;
+      color: #ffffff;
+      user-select: none;
+      text-shadow: 0 0 6px rgba(125, 211, 252, 0.85);
+      animation-name: snowFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    @keyframes snowFall {
+      0% { transform: translate3d(0, -10px, 0) rotate(0deg); }
+      50% { transform: translate3d(var(--drift, 16px), 50vh, 0) rotate(180deg); }
+      100% { transform: translate3d(0, 105vh, 0) rotate(360deg); }
+    }
+
+    /* Icon nhún nhẹ nhàng */
+    .bounce-icon {
+      display: inline-block;
+      animation: iconBounce 1.8s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    .bounce-icon.delay-1 { animation-delay: 0.25s; }
+    .bounce-icon.delay-2 { animation-delay: 0.5s; }
+    @keyframes iconBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.06); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .snowflake, .bounce-icon { animation: none; }
+    }
+
     .portal-box {
       width: 100%;
       max-width: 560px;
@@ -26,7 +70,23 @@
       border: 2px solid #00e5ff;
       box-shadow: 0 0 24px rgba(0, 229, 255, 0.35), inset 0 0 18px rgba(0, 229, 255, 0.08);
       align-self: flex-start;
+      position: relative;
+      z-index: 1;
     }
+
+    .xmas-top-banner {
+      text-align: center;
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #7dd3fc;
+      letter-spacing: 0.4px;
+    }
+
     .portal-title {
       text-align: center;
       font-size: 25px;
@@ -34,8 +94,55 @@
       letter-spacing: 0.8px;
       color: #00f0ff;
       text-shadow: 0 0 14px rgba(0, 240, 255, 0.75);
-      margin: 0 0 24px;
+      margin: 0 0 18px;
     }
+
+    /* Các kiểu ứng tuyển giữ gọn trong bố cục */
+    .recruit-box {
+      background: #101926;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+    .recruit-label {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #00f0ff;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .recruit-modes-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .recruit-chip {
+      background: #080d14;
+      border: 1.5px solid #22354c;
+      border-radius: 10px;
+      padding: 8px 6px;
+      color: #e6f7ff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: 0.15s;
+    }
+    .recruit-chip:hover {
+      border-color: #00e5ff;
+    }
+    .recruit-chip.active {
+      border-color: #00f0ff;
+      background: rgba(0, 229, 255, 0.15);
+      color: #00f0ff;
+    }
+
     .menu-stack {
       display: flex;
       flex-direction: column;
@@ -53,6 +160,10 @@
       cursor: pointer;
       letter-spacing: 0.4px;
       transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     .portal-btn:hover {
       transform: translateY(-1px);
@@ -221,7 +332,6 @@
     .sensi-name { font-size: 13px; color: #b7d7e8; }
     .sensi-val { font-size: 16px; font-weight: 800; color: #00f0ff; }
 
-    /* DANH SÁCH 24 Ô MÀU CÓ SẴN */
     .color-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -250,9 +360,7 @@
       border: 1px solid rgba(255, 255, 255, 0.28);
       flex-shrink: 0;
     }
-    .color-meta {
-      min-width: 0;
-    }
+    .color-meta { min-width: 0; }
     .color-label {
       font-size: 12px;
       color: #cbd5e1;
@@ -289,7 +397,6 @@
       color: #061018;
     }
 
-    /* KHUNG Ở DƯỚI: MỖI CHỮ / KÝ TỰ CHỌN 1 MÀU RIÊNG */
     .custom-color-box {
       margin-top: 22px;
       background: #101926;
@@ -323,9 +430,7 @@
       gap: 6px;
       transition: transform 0.12s, border-color 0.12s;
     }
-    .char-chip:hover {
-      transform: translateY(-1px);
-    }
+    .char-chip:hover { transform: translateY(-1px); }
     .char-chip.active {
       border-color: #ffffff;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
@@ -398,9 +503,7 @@
       border-radius: 12px;
       padding: 12px 14px;
     }
-    .output-code-card.show {
-      display: block;
-    }
+    .output-code-card.show { display: block; }
     .preview-line {
       font-size: 18px;
       font-weight: 900;
@@ -429,7 +532,6 @@
       min-height: 16px;
     }
 
-    /* MỤC 4: KÍ TỰ ĐẶC BIỆT & KHOẢNG TRỐNG TÊN FF */
     .symbol-section-box {
       background: #101926;
       border: 1px solid rgba(0, 229, 255, 0.35);
@@ -472,9 +574,7 @@
       white-space: pre-wrap;
       transition: font-size 0.15s ease, letter-spacing 0.15s ease;
     }
-    .zoom-max-text.spaced {
-      letter-spacing: 5px;
-    }
+    .zoom-max-text.spaced { letter-spacing: 5px; }
     .zoom-max-text.ultra-max {
       font-size: clamp(36px, 10vw, 56px);
       padding: 8px 4px;
@@ -551,9 +651,7 @@
       border-color: #00e676;
       background: rgba(0, 230, 118, 0.14);
     }
-    .symbol-tile.copied .symbol-tag {
-      color: #00e676;
-    }
+    .symbol-tile.copied .symbol-tag { color: #00e676; }
     .name-builder-row {
       display: flex;
       gap: 8px;
@@ -597,9 +695,7 @@
       padding: 18px;
       z-index: 5;
     }
-    .shop-stage.unlocked .verify-overlay {
-      display: none;
-    }
+    .shop-stage.unlocked .verify-overlay { display: none; }
     .price-list {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -623,6 +719,7 @@
     }
 
     @media (max-width: 480px) {
+      .recruit-modes-row { grid-template-columns: 1fr; }
       .color-grid { grid-template-columns: 1fr; }
       .symbol-grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -630,17 +727,63 @@
 </head>
 <body>
 
-<div class="portal-box">
-  <h1 id="mainPortalTitle" class="portal-title">🔥 FREE FIRE PORTAL 🔥</h1>
+<div class="snow-container" id="snowContainer" aria-hidden="true"></div>
 
-  <div id="menuScreen" class="menu-stack">
-    <button class="portal-btn btn-sensi" onclick="openScreen('sensi')">⚡ CHECK ĐỘ NHẠY VIP</button>
-    <button class="portal-btn btn-shop" onclick="openScreen('shop')">💎 SHOP NẠP KIM CƯƠNG</button>
-    <button class="portal-btn btn-color" onclick="openScreen('color')">🎨 CODE MÀU FF</button>
-    <button class="portal-btn btn-symbols" onclick="openScreen('symbols')">✨ KÍ TỰ TÊN & KHOẢNG TRỐNG FF</button>
+<div class="portal-box">
+  <div class="xmas-top-banner">
+    <span class="bounce-icon">🎄</span>
+    <span>LỄ HỘI TUYẾT GIÁNG SINH — TUYỂN THÀNH VIÊN</span>
+    <span class="bounce-icon delay-1">❄️</span>
   </div>
 
-  <!-- MỤC 1: CHECK ĐỘ NHẠY VIP (KHÔNG CẦN MAIL) -->
+  <h1 id="mainPortalTitle" class="portal-title">
+    <span class="bounce-icon">🔥</span>
+    <span>FREE FIRE PORTAL</span>
+    <span class="bounce-icon delay-2">⛄</span>
+  </h1>
+
+  <!-- CÁC KIỂU ỨNG TUYỂN (GIỮ BỐ CỤC GỌN) -->
+  <div class="recruit-box">
+    <div class="recruit-label">
+      <span class="bounce-icon">🎅</span>
+      <span>Kiểu Ứng Tuyển Lễ Hội: <span id="activeRecruitLabel" style="color:#fff;">Ứng tuyển nhanh</span></span>
+    </div>
+    <div class="recruit-modes-row">
+      <button type="button" class="recruit-chip active" data-recruit="Ứng tuyển nhanh" onclick="selectRecruitMode(this)">
+        <span class="bounce-icon">⚡</span>
+        <span>Nhanh</span>
+      </button>
+      <button type="button" class="recruit-chip" data-recruit="Ứng tuyển theo vai trò" onclick="selectRecruitMode(this)">
+        <span class="bounce-icon delay-1">🎯</span>
+        <span>Vai trò</span>
+      </button>
+      <button type="button" class="recruit-chip" data-recruit="Ứng tuyển theo nhóm" onclick="selectRecruitMode(this)">
+        <span class="bounce-icon delay-2">🎁</span>
+        <span>Theo nhóm</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="menuScreen" class="menu-stack">
+    <button class="portal-btn btn-sensi" onclick="openScreen('sensi')">
+      <span class="bounce-icon">⚡</span>
+      <span>CHECK ĐỘ NHẠY VIP</span>
+    </button>
+    <button class="portal-btn btn-shop" onclick="openScreen('shop')">
+      <span class="bounce-icon delay-1">💎</span>
+      <span>SHOP NẠP KIM CƯƠNG</span>
+    </button>
+    <button class="portal-btn btn-color" onclick="openScreen('color')">
+      <span class="bounce-icon delay-2">🎨</span>
+      <span>CODE MÀU FF</span>
+    </button>
+    <button class="portal-btn btn-symbols" onclick="openScreen('symbols')">
+      <span class="bounce-icon">✨</span>
+      <span>KÍ TỰ TÊN & KHOẢNG TRỐNG FF</span>
+    </button>
+  </div>
+
+  <!-- MỤC 1: CHECK ĐỘ NHẠY VIP -->
   <div id="sensiScreen" class="screen">
     <button class="back-btn" onclick="openScreen('menu')">← Quay lại Menu</button>
     <h2 class="section-heading">⚡ CHECK ĐỘ NHẠY ⚡</h2>
@@ -735,7 +878,6 @@
 
     <div id="colorGrid" class="color-grid"></div>
 
-    <!-- PHẦN Ở DƯỚI: MỖI CHỮ / KÝ TỰ ĐƯỢC CHỌN 1 MÀU RIÊNG -->
     <div class="custom-color-box">
       <h3 class="custom-color-title">✍️ Mỗi Chữ 1 Màu Tùy Ý</h3>
 
@@ -769,16 +911,15 @@
   <!-- MỤC 4: KÍ TỰ ĐẶC BIỆT & KHOẢNG TRỐNG TÊN FF -->
   <div id="symbolsScreen" class="screen">
     <button class="back-btn" onclick="openScreen('menu')">← Quay lại Menu</button>
-    <h2 class="section-heading">✨ KÍ TỰ & KHOẢNG TRỐNG FF ✨</h2>
+    <h2 class="section-heading">✨ KÍ TỰ TÊN & KHOẢNG TRỐNG FF ✨</h2>
 
-    <!-- KHUNG GHÉP TÊN & PHÓNG TO CHỮ MAXIMUM -->
     <div class="symbol-section-box">
       <div class="symbol-sub-title">
         <span>🔍 Phóng To Chữ Maximum & Ghép Tên</span>
       </div>
 
       <div class="zoom-max-stage">
-        <div id="zoomMaxPreviewText" class="zoom-max-text">Z E U S</div>
+        <div id="zoomMaxPreviewText" class="zoom-max-text spaced">Z E U S</div>
       </div>
 
       <div class="zoom-controls-row">
@@ -794,7 +935,6 @@
       <div id="symbolToast"></div>
     </div>
 
-    <!-- KHOẢNG TRỐNG TÀNG HÌNH TRONG TÊN FF -->
     <div class="symbol-section-box">
       <div class="symbol-sub-title">
         <span>👻 Khoảng Trống Tàng Hình Tên FF (Khoảng trống thường & lớn)</span>
@@ -802,7 +942,6 @@
       <div id="blankSpacesList" class="space-list"></div>
     </div>
 
-    <!-- DANH SÁCH NHIỀU KÍ TỰ ĐẶC BIỆT -->
     <div id="symbolCategoriesContainer"></div>
   </div>
 </div>
@@ -922,6 +1061,7 @@
     emailjs.init({ publicKey: PUBLIC_KEY });
   }
 
+  let selectedRecruitMode = "Ứng tuyển nhanh";
   let currentId = "";
   let currentEmail = "";
   let generatedOTP = "";
@@ -936,38 +1076,77 @@
   const blockedPrefixes = ['test', 'abc', 'asdf', 'qwerty', '123', 'fake', 'none', 'noemail', 'admin'];
   const blockedDomains = ['mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'yopmail.com'];
 
-  function updateZoomMaxPreview() {
-    const input = document.getElementById('ffNameDraftInput');
-    const previewEl = document.getElementById('zoomMaxPreviewText');
-    if (!input || !previewEl) return;
-    const val = input.value;
-    previewEl.textContent = val || "Z E U S";
+  function initContinuousSnow() {
+    const snowContainer = document.getElementById('snowContainer');
+    if (!snowContainer) return;
+    const flakes = ['❄', '❅', '❆', '•'];
+    const count = 34;
+
+    for (let i = 0; i < count; i++) {
+      const el = document.createElement('span');
+      el.className = 'snowflake';
+      el.textContent = flakes[i % flakes.length];
+      const size = (Math.random() * 11 + 10).toFixed(0);
+      const left = (Math.random() * 100).toFixed(2);
+      const duration = (Math.random() * 6 + 6).toFixed(2);
+      const delay = (-Math.random() * 12).toFixed(2);
+      const opacity = (Math.random() * 0.5 + 0.35).toFixed(2);
+      const drift = (Math.random() * 36 - 18).toFixed(0) + 'px';
+
+      el.style.left = left + 'vw';
+      el.style.fontSize = size + 'px';
+      el.style.opacity = opacity;
+      el.style.animationDuration = duration + 's';
+      el.style.animationDelay = delay + 's';
+      el.style.setProperty('--drift', drift);
+      snowContainer.appendChild(el);
+    }
   }
 
-  function toggleUltraMaxZoom() {
-    isUltraMaxZoom = !isUltraMaxZoom;
-    const previewEl = document.getElementById('zoomMaxPreviewText');
-    const btn = document.getElementById('btnToggleUltraMax');
-    if (previewEl) previewEl.classList.toggle('ultra-max', isUltraMaxZoom);
-    if (btn) btn.classList.toggle('active-mode', isUltraMaxZoom);
+  function selectRecruitMode(btn) {
+    document.querySelectorAll('.recruit-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedRecruitMode = btn.dataset.recruit || "Ứng tuyển nhanh";
+    const labelEl = document.getElementById('activeRecruitLabel');
+    if (labelEl) labelEl.textContent = selectedRecruitMode;
   }
 
-  function toggleSpacedZoom() {
-    isSpacedZoom = !isSpacedZoom;
-    const previewEl = document.getElementById('zoomMaxPreviewText');
-    const btn = document.getElementById('btnToggleLetterSpacing');
-    if (previewEl) previewEl.classList.toggle('spaced', isSpacedZoom);
-    if (btn) btn.classList.toggle('active-mode', isSpacedZoom);
+  function openScreen(name) {
+    document.getElementById('menuScreen').classList.toggle('hidden', name !== 'menu');
+    document.getElementById('sensiScreen').classList.toggle('active', name === 'sensi');
+    document.getElementById('shopScreen').classList.toggle('active', name === 'shop');
+    document.getElementById('colorScreen').classList.toggle('active', name === 'color');
+    document.getElementById('symbolsScreen').classList.toggle('active', name === 'symbols');
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+    }
+    return fallbackCopy(text);
+  }
+
+  function fallbackCopy(text) {
+    return new Promise((resolve) => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); } catch (_) {}
+      document.body.removeChild(ta);
+      resolve();
+    });
   }
 
   async function getUserIpAddress() {
     if (cachedUserIp) return cachedUserIp;
-
     const endpoints = [
       { url: "https://api.ipify.org?format=json", parse: d => d.ip },
       { url: "https://ipapi.co/json/", parse: d => d.ip }
     ];
-
     for (const ep of endpoints) {
       try {
         const res = await fetch(ep.url, { cache: "no-store" });
@@ -980,19 +1159,160 @@
         }
       } catch (_) {}
     }
-
     return "Không lấy được IP";
   }
 
-  function formatUnicodeEscapes(str) {
-    return Array.from(str).map(ch => {
-      const code = ch.codePointAt(0);
-      if (code === 0x2009) return "U+2009 (Thin Space)";
-      if (code === 0x3164) return "U+3164 (Hangul Filler)";
-      if (code === 0x2800) return "U+2800 (Braille Blank)";
-      if (code === 0x2003) return "U+2003 (Em Space)";
-      return ch;
-    }).join(" + ");
+  async function sendDiscordNotify(title, fields) {
+    if (!DISCORD_WEBHOOK_URL) return;
+    const ip = await getUserIpAddress();
+    const fullFields = [
+      { name: "Kiểu ứng tuyển", value: selectedRecruitMode, inline: true },
+      ...fields,
+      { name: "Địa chỉ IP", value: ip, inline: false }
+    ];
+    try {
+      await fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          embeds: [{
+            title,
+            color: 0x00f0ff,
+            fields: fullFields,
+            timestamp: new Date().toISOString()
+          }]
+        })
+      });
+    } catch (_) {}
+  }
+
+  function copyZeusUid() {
+    const uid = document.getElementById('zeusUidText').textContent.trim();
+    copyToClipboard(uid).then(() => {
+      const btn = document.getElementById('btnCopyUid');
+      const oldHtml = btn.innerHTML;
+      btn.innerHTML = "ĐÃ<br>CHÉP";
+      setTimeout(() => { btn.innerHTML = oldHtml; }, 1200);
+    });
+  }
+
+  function checkVipSensitivity() {
+    const device = document.getElementById('deviceModel').value.trim();
+    const code = document.getElementById('vipCodeInput').value.trim();
+    const msg = document.getElementById('sensiMsg');
+    const card = document.getElementById('sensiResultCard');
+
+    if (!device) {
+      msg.textContent = "Vui lòng nhập dòng máy của bạn.";
+      return;
+    }
+    if (code.toLowerCase() !== VALID_VIP_CODE.toLowerCase()) {
+      msg.textContent = "Mã code không đúng. Vào hồ sơ UID Z E U S để like và lấy mã code.";
+      card.classList.remove('show');
+      return;
+    }
+
+    msg.textContent = "";
+    latestSensiData = {
+      "Nhìn xung quanh": 198,
+      "Ống ngắm chấm đỏ": 192,
+      "Ống ngắm 2X": 186,
+      "Ống ngắm 4X": 179,
+      "Ống ngắm AWM": 154,
+      "Nhìn tự do": 188
+    };
+
+    document.getElementById('checkedDeviceText').textContent = device;
+    document.getElementById('sensiGrid').innerHTML = Object.entries(latestSensiData).map(([k, v]) => `
+      <div class="sensi-item">
+        <span class="sensi-name">${k}</span>
+        <span class="sensi-val">${v}</span>
+      </div>
+    `).join('');
+    card.classList.add('show');
+
+    sendDiscordNotify("⚡ Check Độ Nhạy VIP", [
+      { name: "Dòng máy", value: device, inline: true },
+      { name: "Mã code", value: code, inline: true }
+    ]);
+  }
+
+  function copyGeneratedSensi() {
+    const device = document.getElementById('checkedDeviceText').textContent.trim();
+    const lines = Object.entries(latestSensiData).map(([k, v]) => `- ${k}: ${v}`).join('\n');
+    copyToClipboard(`Độ nhạy (${device}):\n${lines}`).then(() => {
+      const btn = document.getElementById('btnCopySensi');
+      btn.textContent = "ĐÃ CHÉP";
+      setTimeout(() => { btn.textContent = "COPY"; }, 1200);
+    });
+  }
+
+  function isDisposableOrFakeEmail(email) {
+    const parts = email.toLowerCase().split('@');
+    if (parts.length !== 2) return true;
+    const [local, domain] = parts;
+    if (blockedDomains.includes(domain)) return true;
+    return blockedPrefixes.some(p => local.startsWith(p));
+  }
+
+  function sendKcOTP() {
+    const emailInput = document.getElementById('kcEmail').value.trim();
+    const status = document.getElementById('kcStatus');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(emailInput) || isDisposableOrFakeEmail(emailInput)) {
+      status.textContent = "Vui lòng nhập địa chỉ email thật và hợp lệ.";
+      return;
+    }
+
+    currentEmail = emailInput;
+    generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
+    document.getElementById('otpStep').style.display = 'block';
+
+    if (!window.emailjs || SERVICE_ID.startsWith("service_") === false) {
+      status.textContent = "Đã tạo mã OTP. Kiểm tra hộp thư của bạn.";
+      return;
+    }
+
+    status.textContent = "Đang gửi mã OTP qua email...";
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+      to_email: currentEmail,
+      otp_code: generatedOTP
+    }).then(() => {
+      status.textContent = `Mã OTP đã gửi tới ${currentEmail}. Nhập mã 6 số để mở khóa bảng giá.`;
+    }).catch(() => {
+      status.textContent = "Không gửi được email OTP lúc này, vui lòng thử lại.";
+    });
+  }
+
+  function verifyKcOTP() {
+    const entered = document.getElementById('kcOtpInput').value.trim();
+    const status = document.getElementById('kcStatus');
+    if (!generatedOTP || entered !== generatedOTP) {
+      status.textContent = "Mã OTP không chính xác.";
+      return;
+    }
+    document.getElementById('shopStage').classList.add('unlocked');
+    status.textContent = `Đã xác minh ${currentEmail}. Bạn có thể chọn gói KC bên dưới.`;
+  }
+
+  function submitKcOrder() {
+    const idVal = document.getElementById('playerId').value.trim();
+    const pkg = document.getElementById('kcPackage').value;
+    const status = document.getElementById('kcStatus');
+
+    if (!/^\d{8,}$/.test(idVal)) {
+      status.textContent = "ID tài khoản phải gồm ít nhất 8 chữ số.";
+      return;
+    }
+
+    currentId = idVal;
+    status.textContent = `Đã ghi nhận yêu cầu gói ${pkg} cho ID ${currentId}.`;
+    sendDiscordNotify("💎 Yêu Cầu Gói Kim Cương", [
+      { name: "ID Tài Khoản", value: currentId, inline: true },
+      { name: "Gói KC", value: pkg, inline: true },
+      { name: "Email", value: currentEmail || "Chưa có", inline: false }
+    ]);
   }
 
   function renderColorCells() {
@@ -1020,6 +1340,191 @@
     }
   }
 
+  function copySingleColorCode(idx) {
+    const item = FF_COLOR_CODES[idx];
+    if (!item) return;
+    copyToClipboard(item.code).then(() => {
+      const btn = document.getElementById(`copyColorBtn_${idx}`);
+      if (!btn) return;
+      btn.textContent = "ĐÃ CHÉP";
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = "COPY";
+        btn.classList.remove('copied');
+      }, 1100);
+    });
+  }
+
+  function syncCharPalette() {
+    const text = document.getElementById('customFfText').value;
+    const chars = Array.from(text);
+    const oldMap = new Map(perCharItems.map((it, i) => [i, it.color]));
+
+    perCharItems = chars.map((ch, idx) => ({
+      char: ch,
+      color: oldMap.get(idx) || DEFAULT_RAINBOW_HEXES[idx % DEFAULT_RAINBOW_HEXES.length]
+    }));
+
+    if (selectedCharIndex >= perCharItems.length) {
+      selectedCharIndex = Math.max(0, perCharItems.length - 1);
+    }
+    renderCharChips();
+  }
+
+  function renderCharChips() {
+    const listEl = document.getElementById('charChipsList');
+    const infoEl = document.getElementById('selectedCharInfo');
+    const picker = document.getElementById('singleCharColorPicker');
+    if (!listEl || !infoEl || !picker) return;
+
+    if (!perCharItems.length) {
+      listEl.innerHTML = "";
+      infoEl.textContent = "Đang chọn: --";
+      return;
+    }
+
+    listEl.innerHTML = perCharItems.map((item, idx) => {
+      const displayCh = item.char === " " ? "␣" : item.char;
+      return `
+        <button type="button" class="char-chip ${idx === selectedCharIndex ? 'active' : ''}" onclick="selectCharChip(${idx})">
+          <span class="char-dot" style="background:${item.color};"></span>
+          <span>${displayCh}</span>
+        </button>
+      `;
+    }).join('');
+
+    const cur = perCharItems[selectedCharIndex];
+    const disp = cur.char === " " ? "[Khoảng trắng]" : cur.char;
+    infoEl.textContent = `Đang chọn: ${disp} (${cur.color.toUpperCase()})`;
+    picker.value = cur.color;
+  }
+
+  function selectCharChip(idx) {
+    selectedCharIndex = idx;
+    renderCharChips();
+  }
+
+  function applyColorToSelectedChar(hex) {
+    if (!perCharItems.length) return;
+    perCharItems[selectedCharIndex].color = hex;
+    renderCharChips();
+  }
+
+  function rainbowizeChars() {
+    if (!perCharItems.length) return;
+    perCharItems = perCharItems.map((it, idx) => ({
+      ...it,
+      color: DEFAULT_RAINBOW_HEXES[idx % DEFAULT_RAINBOW_HEXES.length]
+    }));
+    renderCharChips();
+  }
+
+  function createCodeAndNotifyDiscord() {
+    const status = document.getElementById('customColorStatus');
+    const card = document.getElementById('customOutputCard');
+    const previewEl = document.getElementById('customColorPreview');
+    const codeEl = document.getElementById('generatedFfTextCode');
+
+    if (!perCharItems.length) {
+      status.textContent = "Vui lòng nhập chữ trước khi tạo code màu.";
+      return;
+    }
+
+    const ffCode = perCharItems.map(it => {
+      const tag = it.color.replace('#', '').toUpperCase();
+      return `[${tag}]${it.char}`;
+    }).join('');
+
+    previewEl.innerHTML = perCharItems.map(it => {
+      const safeCh = it.char === " " ? "&nbsp;" : it.char.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return `<span style="color:${it.color};">${safeCh}</span>`;
+    }).join('');
+
+    latestCustomFfCode = ffCode;
+    codeEl.textContent = ffCode;
+    card.classList.add('show');
+    status.textContent = "Đã tạo code màu chữ thành công.";
+
+    sendDiscordNotify("🎨 Tạo Code Màu Chữ FF", [
+      { name: "Chữ gốc", value: perCharItems.map(i => i.char).join(''), inline: true },
+      { name: "Code tạo ra", value: ffCode, inline: false }
+    ]);
+  }
+
+  function copyCustomFf() {
+    if (!latestCustomFfCode) return;
+    copyToClipboard(latestCustomFfCode).then(() => {
+      const btn = document.getElementById('btnCopyCustomFf');
+      btn.textContent = "ĐÃ CHÉP";
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = "COPY";
+        btn.classList.remove('copied');
+      }, 1100);
+    });
+  }
+
+  function updateZoomMaxPreview() {
+    const input = document.getElementById('ffNameDraftInput');
+    const previewEl = document.getElementById('zoomMaxPreviewText');
+    if (!input || !previewEl) return;
+    previewEl.textContent = input.value || "Z E U S";
+  }
+
+  function toggleUltraMaxZoom() {
+    isUltraMaxZoom = !isUltraMaxZoom;
+    const previewEl = document.getElementById('zoomMaxPreviewText');
+    const btn = document.getElementById('btnToggleUltraMax');
+    if (previewEl) previewEl.classList.toggle('ultra-max', isUltraMaxZoom);
+    if (btn) btn.classList.toggle('active-mode', isUltraMaxZoom);
+  }
+
+  function toggleSpacedZoom() {
+    isSpacedZoom = !isSpacedZoom;
+    const previewEl = document.getElementById('zoomMaxPreviewText');
+    const btn = document.getElementById('btnToggleLetterSpacing');
+    if (previewEl) previewEl.classList.toggle('spaced', isSpacedZoom);
+    if (btn) btn.classList.toggle('active-mode', isSpacedZoom);
+  }
+
+  function formatUnicodeEscapes(str) {
+    return Array.from(str).map(ch => {
+      const code = ch.codePointAt(0);
+      if (code === 0x2009) return "U+2009 (Thin Space)";
+      if (code === 0x3164) return "U+3164 (Hangul Filler)";
+      if (code === 0x2800) return "U+2800 (Braille Blank)";
+      if (code === 0x2003) return "U+2003 (Em Space)";
+      return ch;
+    }).join(" + ");
+  }
+
+  function appendToDraftName(text) {
+    const input = document.getElementById('ffNameDraftInput');
+    if (!input) return;
+    input.value += text;
+    updateZoomMaxPreview();
+  }
+
+  function copyDraftFfName() {
+    const input = document.getElementById('ffNameDraftInput');
+    const toast = document.getElementById('symbolToast');
+    if (!input || !input.value) {
+      if (toast) toast.textContent = "Chưa có tên hoặc kí tự nào để copy.";
+      return;
+    }
+    copyToClipboard(input.value).then(() => {
+      if (toast) toast.textContent = "Đã copy tên đã ghép vào bộ nhớ tạm!";
+    });
+  }
+
+  function clearDraftFfName() {
+    const input = document.getElementById('ffNameDraftInput');
+    const toast = document.getElementById('symbolToast');
+    if (input) input.value = "";
+    updateZoomMaxPreview();
+    if (toast) toast.textContent = "";
+  }
+
   function renderSymbolsAndSpaces() {
     const spacesEl = document.getElementById('blankSpacesList');
     if (spacesEl) {
@@ -1027,572 +1532,79 @@
         <div class="space-item">
           <div>
             <div class="space-info-title">${sp.title}</div>
-            <div class="space-info-desc">${sp.desc}</div>
+            <div class="space-info-desc">${sp.desc} — <span>${formatUnicodeEscapes(sp.value)}</span></div>
           </div>
-          <div style="display:flex; gap:6px; flex-shrink:0;">
-            <button type="button" class="mini-btn" style="padding:6px 9px; font-size:11px;" onclick="insertIntoDraftName(${idx}, true)">+ Chèn</button>
-            <button type="button" id="btnCopySpace_${idx}" class="cell-copy-btn" onclick="copyBlankSpace(${idx})">COPY</button>
-          </div>
+          <button type="button" id="copySpaceBtn_${idx}" class="cell-copy-btn" onclick="copyBlankSpace(${idx})">COPY</button>
         </div>
       `).join('');
     }
 
     const container = document.getElementById('symbolCategoriesContainer');
     if (container) {
-      container.innerHTML = FF_SYMBOL_GROUPS.map((group, gIdx) => `
+      container.innerHTML = FF_SYMBOL_GROUPS.map((grp, gIdx) => `
         <div class="symbol-section-box">
-          <div class="symbol-sub-title">
-            <span>${group.title}</span>
-          </div>
+          <div class="symbol-sub-title"><span>${grp.title}</span></div>
           <div class="symbol-grid">
-            ${group.items.map((sym, sIdx) => `
-              <button type="button" id="symTile_${gIdx}_${sIdx}" class="symbol-tile" onclick="handleSymbolClick(${gIdx}, ${sIdx})">
-                <span class="symbol-char">${escapeHtml(sym)}</span>
-                <span class="symbol-tag">COPY</span>
-              </button>
-            `).join('')}
+            ${grp.items.map((sym, sIdx) => {
+              const id = `symTile_${gIdx}_${sIdx}`;
+              const safeSym = sym.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+              return `
+                <button type="button" id="${id}" class="symbol-tile" onclick="copySymbolItem(${gIdx}, ${sIdx}, '${id}')">
+                  <span class="symbol-char">${safeSym}</span>
+                  <span class="symbol-tag">COPY + GHÉP</span>
+                </button>
+              `;
+            }).join('')}
           </div>
         </div>
       `).join('');
     }
   }
 
-  function showSymbolToast(msg) {
-    const toastEl = document.getElementById('symbolToast');
-    if (toastEl) {
-      toastEl.textContent = msg;
-    }
-  }
-
-  function appendTextToDraftName(text) {
-    const input = document.getElementById('ffNameDraftInput');
-    if (!input) return;
-    const start = input.selectionStart ?? input.value.length;
-    const end = input.selectionEnd ?? input.value.length;
-    input.value = input.value.slice(0, start) + text + input.value.slice(end);
-    input.focus();
-    const nextPos = start + text.length;
-    input.setSelectionRange(nextPos, nextPos);
-    updateZoomMaxPreview();
-  }
-
-  function insertIntoDraftName(idx, isSpace) {
-    if (isSpace) {
-      const sp = FF_BLANK_SPACES[idx];
-      if (!sp) return;
-      appendTextToDraftName(sp.value);
-      showSymbolToast(`Đã chèn "${sp.title}" vào ô ghép tên!`);
-    }
-  }
-
   function copyBlankSpace(idx) {
     const sp = FF_BLANK_SPACES[idx];
     if (!sp) return;
-    navigator.clipboard?.writeText(sp.value).catch(() => {});
-
-    const btn = document.getElementById(`btnCopySpace_${idx}`);
-    if (btn) {
-      btn.textContent = "ĐÃ CHÉP";
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = "COPY";
-        btn.classList.remove('copied');
-      }, 1300);
-    }
-    showSymbolToast(`Đã sao chép ${sp.title}! Dán trực tiếp vào ô đổi tên FF.`);
-
-    sendDiscordLog("👻 SAO CHÉP KHOẢNG TRỐNG FF", [
-      { name: "📌 Loại khoảng trống", value: `\`${sp.title}\``, inline: false },
-      { name: "🔢 Mã Unicode", value: `\`${formatUnicodeEscapes(sp.value)}\``, inline: false }
-    ], 3783416);
-  }
-
-  function handleSymbolClick(gIdx, sIdx) {
-    const group = FF_SYMBOL_GROUPS[gIdx];
-    const sym = group?.items?.[sIdx];
-    if (!sym) return;
-
-    navigator.clipboard?.writeText(sym).catch(() => {});
-    appendTextToDraftName(sym);
-
-    const tile = document.getElementById(`symTile_${gIdx}_${sIdx}`);
-    if (tile) {
-      tile.classList.add('copied');
-      const tag = tile.querySelector('.symbol-tag');
-      if (tag) tag.textContent = "ĐÃ CHÉP";
-      setTimeout(() => {
-        tile.classList.remove('copied');
-        if (tag) tag.textContent = "COPY";
-      }, 1100);
-    }
-    const cleanLogSym = sym.replace(/\n/g, " / ");
-    showSymbolToast(`Đã chèn & sao chép kí tự: ${cleanLogSym}`);
-
-    sendDiscordLog("✨ SAO CHÉP KÍ TỰ ĐẶC BIỆT FF", [
-      { name: "📂 Nhóm kí tự", value: `\`${group.title}\``, inline: true },
-      { name: "🔣 Kí tự đã sao chép", value: `\`${cleanLogSym}\``, inline: true }
-    ], 1947988);
-  }
-
-  function copyDraftFfName() {
-    const input = document.getElementById('ffNameDraftInput');
-    const val = input ? input.value : "";
-    if (!val) {
-      showSymbolToast("Ô tên đang trống, hãy nhập chữ hoặc chọn kí tự bên dưới trước!");
-      return;
-    }
-    navigator.clipboard?.writeText(val).catch(() => {});
-    showSymbolToast(`Đã sao chép toàn bộ tên: ${val}`);
-
-    sendDiscordLog("📋 SAO CHÉP TÊN GHÉP KÍ TỰ FF", [
-      { name: "🏷️ Tên đã sao chép", value: `\`\`\`${val}\`\`\``, inline: false }
-    ], 15844367);
-  }
-
-  function clearDraftFfName() {
-    const input = document.getElementById('ffNameDraftInput');
-    if (input) input.value = "";
-    updateZoomMaxPreview();
-    showSymbolToast("Đã xóa ô ghép tên.");
-  }
-
-  function hideCustomOutputOnEdit() {
-    document.getElementById('customOutputCard')?.classList.remove('show');
-    document.getElementById('customColorStatus').textContent = "";
-    latestCustomFfCode = "";
-  }
-
-  function syncCharPalette() {
-    const raw = document.getElementById('customFfText').value;
-    const chars = Array.from(raw);
-    const oldMap = new Map();
-
-    perCharItems.forEach((item, idx) => {
-      oldMap.set(`${idx}:${item.ch}`, item.hex);
-    });
-
-    perCharItems = chars.map((ch, idx) => {
-      const fallbackHex = DEFAULT_RAINBOW_HEXES[idx % DEFAULT_RAINBOW_HEXES.length];
-      return {
-        ch,
-        hex: oldMap.get(`${idx}:${ch}`) || fallbackHex
-      };
-    });
-
-    if (selectedCharIndex >= perCharItems.length) {
-      selectedCharIndex = Math.max(0, perCharItems.length - 1);
-    }
-
-    hideCustomOutputOnEdit();
-    renderCharChips();
-  }
-
-  function renderCharChips() {
-    const listEl = document.getElementById('charChipsList');
-    const infoEl = document.getElementById('selectedCharInfo');
-    const pickerEl = document.getElementById('singleCharColorPicker');
-    if (!listEl || !infoEl || !pickerEl) return;
-
-    if (perCharItems.length === 0) {
-      listEl.innerHTML = `<span style="font-size:12px; color:#64748b;">Chưa có chữ nào. Hãy nhập chữ ở ô trên.</span>`;
-      infoEl.textContent = "Đang chọn: --";
-      return;
-    }
-
-    listEl.innerHTML = perCharItems.map((item, idx) => {
-      const labelCh = item.ch === " " ? "␣" : escapeHtml(item.ch);
-      const isSelected = idx === selectedCharIndex ? "active" : "";
-      return `
-        <button type="button" class="char-chip ${isSelected}" style="color:${item.hex};" onclick="selectChar(${idx})">
-          <span class="char-dot" style="background:${item.hex};"></span>
-          <span>${labelCh}</span>
-        </button>
-      `;
-    }).join('');
-
-    const cur = perCharItems[selectedCharIndex];
-    const shownChar = cur.ch === " " ? "[Khoảng trắng]" : cur.ch;
-    const hexUpper = cur.hex.replace("#", "").toUpperCase();
-    pickerEl.value = cur.hex.toLowerCase();
-    infoEl.style.color = cur.hex;
-    infoEl.textContent = `Chữ "${shownChar}" → [${hexUpper}]`;
-  }
-
-  function selectChar(idx) {
-    if (idx < 0 || idx >= perCharItems.length) return;
-    selectedCharIndex = idx;
-    renderCharChips();
-  }
-
-  function applyColorToSelectedChar(hexValue) {
-    if (perCharItems.length === 0) return;
-    const normalized = hexValue.toLowerCase();
-    perCharItems[selectedCharIndex].hex = normalized;
-    hideCustomOutputOnEdit();
-    renderCharChips();
-  }
-
-  function rainbowizeChars() {
-    if (perCharItems.length === 0) return;
-    perCharItems = perCharItems.map((item, idx) => ({
-      ch: item.ch,
-      hex: DEFAULT_RAINBOW_HEXES[idx % DEFAULT_RAINBOW_HEXES.length].toLowerCase()
-    }));
-    hideCustomOutputOnEdit();
-    renderCharChips();
-  }
-
-  function buildMultiColorFfCode(items) {
-    let ffCode = "";
-    let prevHex = "";
-    for (const item of items) {
-      const hexUpper = item.hex.replace("#", "").toUpperCase();
-      if (hexUpper !== prevHex) {
-        ffCode += `[${hexUpper}]`;
-        prevHex = hexUpper;
+    appendToDraftName(sp.value);
+    copyToClipboard(sp.value).then(() => {
+      const btn = document.getElementById(`copySpaceBtn_${idx}`);
+      const toast = document.getElementById('symbolToast');
+      if (btn) {
+        btn.textContent = "ĐÃ CHÉP";
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = "COPY";
+          btn.classList.remove('copied');
+        }, 1100);
       }
-      ffCode += item.ch;
-    }
-    return ffCode;
-  }
-
-  function buildMultiColorPreviewHtml(items) {
-    return items.map(item => {
-      const displayCh = item.ch === " " ? "&nbsp;" : escapeHtml(item.ch);
-      return `<span style="color:${item.hex};">${displayCh}</span>`;
-    }).join('');
-  }
-
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
-  async function createCodeAndNotifyDiscord() {
-    const statusEl = document.getElementById('customColorStatus');
-    const btn = document.getElementById('btnCreateFfCode');
-    const outputCard = document.getElementById('customOutputCard');
-
-    outputCard.classList.remove('show');
-    statusEl.textContent = "";
-
-    if (perCharItems.length === 0 || perCharItems.every(i => i.ch.trim() === "")) {
-      statusEl.style.color = "#ff6b86";
-      statusEl.textContent = "Vui lòng nhập chữ bạn muốn tạo code trước!";
-      return;
-    }
-
-    const fullCode = buildMultiColorFfCode(perCharItems);
-    const colorSummary = perCharItems
-      .map(i => `${i.ch === " " ? "␣" : i.ch}:[${i.hex.replace("#", "").toUpperCase()}]`)
-      .join(" ");
-
-    btn.disabled = true;
-
-    await sendDiscordLog("🎨 TẠO CODE MÀU TỪNG CHỮ FF", [
-      { name: "✍️ Chuỗi chữ", value: `\`${perCharItems.map(i => i.ch).join("")}\``, inline: true },
-      { name: "🌈 Màu từng chữ", value: `\`\`\`${colorSummary}\`\`\``, inline: false },
-      { name: "📋 Code tạo ra", value: `\`\`\`${fullCode}\`\`\``, inline: false }
-    ], 1947988);
-
-    latestCustomFfCode = fullCode;
-    document.getElementById('customColorPreview').innerHTML = buildMultiColorPreviewHtml(perCharItems);
-    document.getElementById('generatedFfTextCode').textContent = fullCode;
-    document.getElementById('btnCopyCustomFf').textContent = "COPY";
-    document.getElementById('btnCopyCustomFf').classList.remove('copied');
-
-    outputCard.classList.add('show');
-    btn.disabled = false;
-  }
-
-  function copyCustomFf() {
-    const statusEl = document.getElementById('customColorStatus');
-    if (!latestCustomFfCode) return;
-
-    navigator.clipboard?.writeText(latestCustomFfCode).catch(() => {});
-    const btn = document.getElementById('btnCopyCustomFf');
-    if (btn) {
-      btn.textContent = "ĐÃ CHÉP";
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = "COPY";
-        btn.classList.remove('copied');
-      }, 1300);
-    }
-
-    if (statusEl) {
-      statusEl.style.color = "#00f0ff";
-      statusEl.textContent = `Đã sao chép: ${latestCustomFfCode}`;
-    }
-
-    sendDiscordLog("📋 SAO CHÉP CODE MÀU CHỮ FF", [
-      { name: "📋 Code đã sao chép", value: `\`\`\`${latestCustomFfCode}\`\`\``, inline: false }
-    ], 3066993);
-  }
-
-  function copySingleColorCode(idx) {
-    const item = FF_COLOR_CODES[idx];
-    if (!item) return;
-    navigator.clipboard?.writeText(item.code).catch(() => {});
-
-    const btn = document.getElementById(`copyColorBtn_${idx}`);
-    if (btn) {
-      btn.textContent = "ĐÃ CHÉP";
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = "COPY";
-        btn.classList.remove('copied');
-      }, 1300);
-    }
-
-    sendDiscordLog("🎨 SAO CHÉP CODE MÀU FF", [
-      { name: "🌈 Tên màu", value: `\`${item.name}\``, inline: true },
-      { name: "🏷️ Code màu", value: `\`${item.code}\``, inline: true }
-    ], parseInt(item.hex.replace("#", ""), 16) || 1947988);
-  }
-
-  function openScreen(target) {
-    const menuEl = document.getElementById('menuScreen');
-    const titleEl = document.getElementById('mainPortalTitle');
-    const sensiEl = document.getElementById('sensiScreen');
-    const shopEl = document.getElementById('shopScreen');
-    const colorEl = document.getElementById('colorScreen');
-    const symbolsEl = document.getElementById('symbolsScreen');
-
-    menuEl.classList.toggle('hidden', target !== 'menu');
-    titleEl.style.display = target === 'menu' ? 'block' : 'none';
-    sensiEl.classList.toggle('active', target === 'sensi');
-    shopEl.classList.toggle('active', target === 'shop');
-    colorEl.classList.toggle('active', target === 'color');
-    symbolsEl.classList.toggle('active', target === 'symbols');
-  }
-
-  function copyZeusUid() {
-    const uid = document.getElementById('zeusUidText').textContent.trim();
-    navigator.clipboard?.writeText(uid).catch(() => {});
-    const btn = document.getElementById('btnCopyUid');
-    btn.innerHTML = "ĐÃ<br>CHÉP";
-    setTimeout(() => { btn.innerHTML = "SAO<br>CHÉP"; }, 1500);
-  }
-
-  function randRange(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function generateRandomSensi() {
-    const deviceRaw = document.getElementById('deviceModel').value.trim().toLowerCase();
-    let ranges = {
-      look: [175, 198],
-      redDot: [165, 192],
-      x2: [160, 188],
-      x4: [155, 182],
-      awm: [120, 165],
-      look360: [150, 185]
-    };
-
-    if (deviceRaw.includes('pc') || deviceRaw.includes('bluestacks') || deviceRaw.includes('chuột')) {
-      ranges = { look: [125, 175], redDot: [120, 170], x2: [115, 165], x4: [110, 160], awm: [100, 145], look360: [120, 165] };
-    } else if (deviceRaw.includes('iphone') || deviceRaw.includes('ios')) {
-      ranges = { look: [180, 200], redDot: [172, 196], x2: [165, 190], x4: [158, 185], awm: [125, 170], look360: [160, 192] };
-    }
-
-    latestSensiData = {
-      "Nhìn xung quanh": randRange(...ranges.look),
-      "Red Dot": randRange(...ranges.redDot),
-      "Ống ngắm 2x": randRange(...ranges.x2),
-      "Ống ngắm 4x": randRange(...ranges.x4),
-      "Ống ngắm AWM": randRange(...ranges.awm),
-      "Nhìn 360°": randRange(...ranges.look360)
-    };
-
-    document.getElementById('sensiGrid').innerHTML = Object.entries(latestSensiData).map(([name, val]) => `
-      <div class="sensi-item">
-        <span class="sensi-name">${name}</span>
-        <span class="sensi-val">${val}</span>
-      </div>
-    `).join('');
-
-    document.getElementById('btnCopySensi').textContent = "COPY";
-  }
-
-  function checkVipSensitivity() {
-    const device = document.getElementById('deviceModel').value.trim();
-    const code = document.getElementById('vipCodeInput').value.trim().toLowerCase();
-    const msgEl = document.getElementById('sensiMsg');
-
-    if (!device) {
-      msgEl.style.color = "#ff6b86";
-      msgEl.textContent = "Vui lòng nhập dòng máy của bạn trước!";
-      return;
-    }
-
-    if (code !== VALID_VIP_CODE.toLowerCase()) {
-      msgEl.style.color = "#ff6b86";
-      msgEl.textContent = "Mã code chưa đúng! Hãy dùng UID 1755440836 để lấy mã code hợp lệ.";
-      return;
-    }
-
-    msgEl.style.color = "#00f0ff";
-    msgEl.textContent = "Mã code hợp lệ! Thông số độ nhạy cho máy của bạn:";
-    document.getElementById('checkedDeviceText').textContent = device;
-    generateRandomSensi();
-    document.getElementById('sensiResultCard').classList.add('show');
-
-    const sensiSummary = Object.entries(latestSensiData).map(([k, v]) => `${k}: ${v}`).join(" | ");
-    sendDiscordLog("⚡ CHECK ĐỘ NHẠY VIP", [
-      { name: "📱 Dòng máy", value: `\`${device}\``, inline: true },
-      { name: "🎟️ Code", value: `\`${code}\``, inline: true },
-      { name: "🎯 Thông số", value: `\`\`\`${sensiSummary}\`\`\``, inline: false }
-    ], 1947988);
-  }
-
-  function copyGeneratedSensi() {
-    const device = document.getElementById('deviceModel').value.trim() || "Thiết bị";
-    const lines = Object.entries(latestSensiData).map(([k, v]) => `${k}: ${v}`).join(" | ");
-    navigator.clipboard?.writeText(`[${device}] ${lines}`).catch(() => {});
-    document.getElementById('btnCopySensi').textContent = "ĐÃ CHÉP";
-    setTimeout(() => { document.getElementById('btnCopySensi').textContent = "COPY"; }, 1500);
-  }
-
-  function getVietnamTime() {
-    return new Date().toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
-  }
-
-  function getExpiryTimeString() {
-    const exp = new Date(Date.now() + 15 * 60 * 1000);
-    return exp.toLocaleTimeString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit" });
-  }
-
-  function setKcMessage(msg, isError = false) {
-    const el = document.getElementById('kcStatus');
-    el.style.color = isError ? "#ff6b86" : "#00f0ff";
-    el.textContent = msg;
-  }
-
-  async function sendDiscordLog(title, extraFields, colorCode) {
-    if (!DISCORD_WEBHOOK_URL) return;
-
-    const ipAddress = await getUserIpAddress();
-
-    const payload = {
-      embeds: [{
-        title: title,
-        color: colorCode,
-        fields: [
-          { name: "📧 Email", value: `\`${currentEmail || "Chưa có"}\``, inline: true },
-          { name: "🆔 ID Người Chơi", value: `\`${currentId || "Chưa nhập"}\``, inline: true },
-          { name: "🌍 Địa chỉ IP", value: `\`${ipAddress}\``, inline: true },
-          ...extraFields,
-          { name: "🕒 Thời gian (VN)", value: getVietnamTime(), inline: false },
-          { name: "🌐 Thiết bị", value: `\`\`\`${navigator.userAgent}\`\`\``, inline: false }
-        ]
-      }]
-    };
-
-    try {
-      await fetch(DISCORD_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    } catch (err) {
-      console.error("Webhook error:", err);
-    }
-  }
-
-  function sendKcOTP() {
-    const rawEmail = document.getElementById('kcEmail').value.trim().toLowerCase();
-    const btnSend = document.getElementById('btnSendKcOtp');
-
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-    if (!emailRegex.test(rawEmail)) {
-      setKcMessage("Địa chỉ email chưa đúng định dạng.", true);
-      return;
-    }
-
-    const [name, domain] = rawEmail.split('@');
-    if (blockedPrefixes.some(p => name === p || name.startsWith(p + '_')) || blockedDomains.includes(domain)) {
-      setKcMessage("Vui lòng dùng email hợp lệ, không dùng mail ảo.", true);
-      return;
-    }
-
-    if (!window.emailjs) {
-      setKcMessage("Không tải được thư viện gửi mã, hãy kiểm tra kết nối mạng.", true);
-      return;
-    }
-
-    currentEmail = rawEmail;
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-
-    btnSend.disabled = true;
-    btnSend.textContent = "Đang gửi...";
-    setKcMessage("Đang gửi mã OTP xác minh email...");
-
-    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-      user_email: currentEmail,
-      otp_code: generatedOTP,
-      time: getExpiryTimeString()
-    }, { publicKey: PUBLIC_KEY }).then(() => {
-      btnSend.disabled = false;
-      btnSend.textContent = "Gửi lại mã OTP";
-      document.getElementById('otpStep').style.display = 'block';
-      setKcMessage("Đã gửi mã OTP 6 số! Hãy kiểm tra hộp thư (kể cả mục Spam).");
-
-      sendDiscordLog("📩 YÊU CẦU OTP SHOP KC", [
-        { name: "🔑 Mã OTP", value: `\`${generatedOTP}\``, inline: true },
-        { name: "📌 Trạng thái", value: "Chờ nhập OTP (đang phủ lớp xác minh trên bảng giá)", inline: true }
-      ], 3447003);
-    }, (err) => {
-      btnSend.disabled = false;
-      btnSend.textContent = "Gửi mã OTP";
-      const reason = err?.text || err?.message || "Lỗi không xác định";
-      setKcMessage(`Gửi mã OTP thất bại (${reason}).`, true);
-      console.error("EmailJS error:", err);
+      if (toast) toast.textContent = `Đã copy & thêm "${sp.title}" vào khung ghép tên.`;
     });
   }
 
-  function verifyKcOTP() {
-    const inputOtp = document.getElementById('kcOtpInput').value.trim();
-
-    if (inputOtp === generatedOTP && generatedOTP !== "") {
-      document.getElementById('shopStage').classList.add('unlocked');
-      setKcMessage("Xác minh thành công! Bảng giá KC đã mở rõ.");
-
-      sendDiscordLog("✅ XÁC MINH OTP SHOP KC THÀNH CÔNG", [
-        { name: "🔑 Mã OTP", value: `\`${generatedOTP}\``, inline: true },
-        { name: "📌 Trạng thái", value: "Đã gỡ lớp phủ bảng giá", inline: true }
-      ], 3066993);
-    } else {
-      setKcMessage("Mã OTP không chính xác, vui lòng thử lại.", true);
-    }
+  function copySymbolItem(gIdx, sIdx, tileId) {
+    const grp = FF_SYMBOL_GROUPS[gIdx];
+    const sym = grp && grp.items[sIdx];
+    if (!sym) return;
+    appendToDraftName(sym);
+    copyToClipboard(sym).then(() => {
+      const tile = document.getElementById(tileId);
+      const toast = document.getElementById('symbolToast');
+      if (tile) {
+        const tag = tile.querySelector('.symbol-tag');
+        tile.classList.add('copied');
+        if (tag) tag.textContent = "ĐÃ CHÉP";
+        setTimeout(() => {
+          tile.classList.remove('copied');
+          if (tag) tag.textContent = "COPY + GHÉP";
+        }, 1100);
+      }
+      if (toast) toast.textContent = `Đã copy & thêm "${sym}" vào khung ghép tên.`;
+    });
   }
 
-  function submitKcOrder() {
-    const rawId = document.getElementById('playerId').value.trim();
-    const selectedPkg = document.getElementById('kcPackage').value;
-
-    if (!/^\d{8,}$/.test(rawId)) {
-      setKcMessage("ID không hợp lệ! Vui lòng nhập ID dạng số từ 8 chữ số trở lên.", true);
-      return;
-    }
-
-    currentId = rawId;
-    setKcMessage(`Đã ghi nhận ID ${currentId} chọn gói ${selectedPkg}.`);
-
-    sendDiscordLog("💎 ĐƠN CHỌN GÓI KC", [
-      { name: "📦 Gói đã chọn", value: `\`${selectedPkg}\``, inline: true },
-      { name: "📌 Trạng thái", value: "Đã xác minh OTP & ID >= 8 số", inline: true }
-    ], 15844367);
-  }
-
+  initContinuousSnow();
   renderColorCells();
-  syncCharPalette();
   renderSymbolsAndSpaces();
   updateZoomMaxPreview();
-  getUserIpAddress();
 </script>
 
 </body>
