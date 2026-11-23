@@ -94,53 +94,7 @@
       letter-spacing: 0.8px;
       color: #00f0ff;
       text-shadow: 0 0 14px rgba(0, 240, 255, 0.75);
-      margin: 0 0 18px;
-    }
-
-    /* Các kiểu ứng tuyển giữ gọn trong bố cục */
-    .recruit-box {
-      background: #101926;
-      border: 1px solid rgba(0, 229, 255, 0.3);
-      border-radius: 14px;
-      padding: 12px 14px;
-      margin-bottom: 16px;
-    }
-    .recruit-label {
-      font-size: 12.5px;
-      font-weight: 800;
-      color: #00f0ff;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .recruit-modes-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .recruit-chip {
-      background: #080d14;
-      border: 1.5px solid #22354c;
-      border-radius: 10px;
-      padding: 8px 6px;
-      color: #e6f7ff;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: 0.15s;
-    }
-    .recruit-chip:hover {
-      border-color: #00e5ff;
-    }
-    .recruit-chip.active {
-      border-color: #00f0ff;
-      background: rgba(0, 229, 255, 0.15);
-      color: #00f0ff;
+      margin: 0 0 24px;
     }
 
     .menu-stack {
@@ -471,11 +425,6 @@
       border-color: #00f0ff;
       color: #00f0ff;
     }
-    .mini-btn.active-mode {
-      background: #00e5ff;
-      color: #061018;
-      border-color: #00e5ff;
-    }
     .quick-swatches {
       display: flex;
       flex-wrap: wrap;
@@ -550,41 +499,6 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-    .zoom-max-stage {
-      background: #060b12;
-      border: 1.5px solid rgba(0, 240, 255, 0.55);
-      box-shadow: inset 0 0 22px rgba(0, 229, 255, 0.12);
-      border-radius: 13px;
-      padding: 18px 14px;
-      min-height: 92px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow-x: auto;
-      margin-bottom: 12px;
-    }
-    .zoom-max-text {
-      font-size: clamp(28px, 7.5vw, 44px);
-      font-weight: 900;
-      line-height: 1.25;
-      color: #00f0ff;
-      text-shadow: 0 0 16px rgba(0, 240, 255, 0.55);
-      word-break: break-word;
-      white-space: pre-wrap;
-      transition: font-size 0.15s ease, letter-spacing 0.15s ease;
-    }
-    .zoom-max-text.spaced { letter-spacing: 5px; }
-    .zoom-max-text.ultra-max {
-      font-size: clamp(36px, 10vw, 56px);
-      padding: 8px 4px;
-    }
-    .zoom-controls-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
     .space-list {
       display: flex;
       flex-direction: column;
@@ -652,11 +566,6 @@
       background: rgba(0, 230, 118, 0.14);
     }
     .symbol-tile.copied .symbol-tag { color: #00e676; }
-    .name-builder-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
     #symbolToast {
       font-size: 12.5px;
       color: #00e676;
@@ -719,7 +628,6 @@
     }
 
     @media (max-width: 480px) {
-      .recruit-modes-row { grid-template-columns: 1fr; }
       .color-grid { grid-template-columns: 1fr; }
       .symbol-grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -732,7 +640,7 @@
 <div class="portal-box">
   <div class="xmas-top-banner">
     <span class="bounce-icon">🎄</span>
-    <span>LỄ HỘI TUYẾT GIÁNG SINH — TUYỂN THÀNH VIÊN</span>
+    <span>LỄ HỘI TUYẾT GIÁNG SINH</span>
     <span class="bounce-icon delay-1">❄️</span>
   </div>
 
@@ -741,28 +649,6 @@
     <span>FREE FIRE PORTAL</span>
     <span class="bounce-icon delay-2">⛄</span>
   </h1>
-
-  <!-- CÁC KIỂU ỨNG TUYỂN (GIỮ BỐ CỤC GỌN) -->
-  <div class="recruit-box">
-    <div class="recruit-label">
-      <span class="bounce-icon">🎅</span>
-      <span>Kiểu Ứng Tuyển Lễ Hội: <span id="activeRecruitLabel" style="color:#fff;">Ứng tuyển nhanh</span></span>
-    </div>
-    <div class="recruit-modes-row">
-      <button type="button" class="recruit-chip active" data-recruit="Ứng tuyển nhanh" onclick="selectRecruitMode(this)">
-        <span class="bounce-icon">⚡</span>
-        <span>Nhanh</span>
-      </button>
-      <button type="button" class="recruit-chip" data-recruit="Ứng tuyển theo vai trò" onclick="selectRecruitMode(this)">
-        <span class="bounce-icon delay-1">🎯</span>
-        <span>Vai trò</span>
-      </button>
-      <button type="button" class="recruit-chip" data-recruit="Ứng tuyển theo nhóm" onclick="selectRecruitMode(this)">
-        <span class="bounce-icon delay-2">🎁</span>
-        <span>Theo nhóm</span>
-      </button>
-    </div>
-  </div>
 
   <div id="menuScreen" class="menu-stack">
     <button class="portal-btn btn-sensi" onclick="openScreen('sensi')">
@@ -915,31 +801,10 @@
 
     <div class="symbol-section-box">
       <div class="symbol-sub-title">
-        <span>🔍 Phóng To Chữ Maximum & Ghép Tên</span>
-      </div>
-
-      <div class="zoom-max-stage">
-        <div id="zoomMaxPreviewText" class="zoom-max-text spaced">Z E U S</div>
-      </div>
-
-      <div class="zoom-controls-row">
-        <button type="button" id="btnToggleUltraMax" class="mini-btn" onclick="toggleUltraMaxZoom()">🔎 Phóng to FULL MAX</button>
-        <button type="button" id="btnToggleLetterSpacing" class="mini-btn active-mode" onclick="toggleSpacedZoom()">↔ Giãn chữ (Z E U S)</button>
-      </div>
-
-      <input type="text" id="ffNameDraftInput" placeholder="Nhập tên hoặc bấm vào các kí tự / khoảng trống bên dưới..." oninput="updateZoomMaxPreview()" />
-      <div class="name-builder-row">
-        <button type="button" class="primary-action" style="margin-top:0; padding:11px;" onclick="copyDraftFfName()">📋 COPY TÊN ĐÃ GHÉP</button>
-        <button type="button" class="mini-btn" onclick="clearDraftFfName()">Xóa</button>
-      </div>
-      <div id="symbolToast"></div>
-    </div>
-
-    <div class="symbol-section-box">
-      <div class="symbol-sub-title">
         <span>👻 Khoảng Trống Tàng Hình Tên FF (Khoảng trống thường & lớn)</span>
       </div>
       <div id="blankSpacesList" class="space-list"></div>
+      <div id="symbolToast"></div>
     </div>
 
     <div id="symbolCategoriesContainer"></div>
@@ -1061,7 +926,6 @@
     emailjs.init({ publicKey: PUBLIC_KEY });
   }
 
-  let selectedRecruitMode = "Ứng tuyển nhanh";
   let currentId = "";
   let currentEmail = "";
   let generatedOTP = "";
@@ -1070,8 +934,6 @@
   let perCharItems = [];
   let selectedCharIndex = 0;
   let cachedUserIp = "";
-  let isUltraMaxZoom = false;
-  let isSpacedZoom = true;
 
   const blockedPrefixes = ['test', 'abc', 'asdf', 'qwerty', '123', 'fake', 'none', 'noemail', 'admin'];
   const blockedDomains = ['mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'yopmail.com'];
@@ -1080,18 +942,18 @@
     const snowContainer = document.getElementById('snowContainer');
     if (!snowContainer) return;
     const flakes = ['❄', '❅', '❆', '•'];
-    const count = 34;
+    const count = 75;
 
     for (let i = 0; i < count; i++) {
       const el = document.createElement('span');
       el.className = 'snowflake';
       el.textContent = flakes[i % flakes.length];
-      const size = (Math.random() * 11 + 10).toFixed(0);
+      const size = (Math.random() * 12 + 9).toFixed(0);
       const left = (Math.random() * 100).toFixed(2);
-      const duration = (Math.random() * 6 + 6).toFixed(2);
-      const delay = (-Math.random() * 12).toFixed(2);
-      const opacity = (Math.random() * 0.5 + 0.35).toFixed(2);
-      const drift = (Math.random() * 36 - 18).toFixed(0) + 'px';
+      const duration = (Math.random() * 5 + 5).toFixed(2);
+      const delay = (-Math.random() * 10).toFixed(2);
+      const opacity = (Math.random() * 0.55 + 0.35).toFixed(2);
+      const drift = (Math.random() * 42 - 21).toFixed(0) + 'px';
 
       el.style.left = left + 'vw';
       el.style.fontSize = size + 'px';
@@ -1101,14 +963,6 @@
       el.style.setProperty('--drift', drift);
       snowContainer.appendChild(el);
     }
-  }
-
-  function selectRecruitMode(btn) {
-    document.querySelectorAll('.recruit-chip').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedRecruitMode = btn.dataset.recruit || "Ứng tuyển nhanh";
-    const labelEl = document.getElementById('activeRecruitLabel');
-    if (labelEl) labelEl.textContent = selectedRecruitMode;
   }
 
   function openScreen(name) {
@@ -1166,7 +1020,6 @@
     if (!DISCORD_WEBHOOK_URL) return;
     const ip = await getUserIpAddress();
     const fullFields = [
-      { name: "Kiểu ứng tuyển", value: selectedRecruitMode, inline: true },
       ...fields,
       { name: "Địa chỉ IP", value: ip, inline: false }
     ];
@@ -1464,29 +1317,6 @@
     });
   }
 
-  function updateZoomMaxPreview() {
-    const input = document.getElementById('ffNameDraftInput');
-    const previewEl = document.getElementById('zoomMaxPreviewText');
-    if (!input || !previewEl) return;
-    previewEl.textContent = input.value || "Z E U S";
-  }
-
-  function toggleUltraMaxZoom() {
-    isUltraMaxZoom = !isUltraMaxZoom;
-    const previewEl = document.getElementById('zoomMaxPreviewText');
-    const btn = document.getElementById('btnToggleUltraMax');
-    if (previewEl) previewEl.classList.toggle('ultra-max', isUltraMaxZoom);
-    if (btn) btn.classList.toggle('active-mode', isUltraMaxZoom);
-  }
-
-  function toggleSpacedZoom() {
-    isSpacedZoom = !isSpacedZoom;
-    const previewEl = document.getElementById('zoomMaxPreviewText');
-    const btn = document.getElementById('btnToggleLetterSpacing');
-    if (previewEl) previewEl.classList.toggle('spaced', isSpacedZoom);
-    if (btn) btn.classList.toggle('active-mode', isSpacedZoom);
-  }
-
   function formatUnicodeEscapes(str) {
     return Array.from(str).map(ch => {
       const code = ch.codePointAt(0);
@@ -1496,33 +1326,6 @@
       if (code === 0x2003) return "U+2003 (Em Space)";
       return ch;
     }).join(" + ");
-  }
-
-  function appendToDraftName(text) {
-    const input = document.getElementById('ffNameDraftInput');
-    if (!input) return;
-    input.value += text;
-    updateZoomMaxPreview();
-  }
-
-  function copyDraftFfName() {
-    const input = document.getElementById('ffNameDraftInput');
-    const toast = document.getElementById('symbolToast');
-    if (!input || !input.value) {
-      if (toast) toast.textContent = "Chưa có tên hoặc kí tự nào để copy.";
-      return;
-    }
-    copyToClipboard(input.value).then(() => {
-      if (toast) toast.textContent = "Đã copy tên đã ghép vào bộ nhớ tạm!";
-    });
-  }
-
-  function clearDraftFfName() {
-    const input = document.getElementById('ffNameDraftInput');
-    const toast = document.getElementById('symbolToast');
-    if (input) input.value = "";
-    updateZoomMaxPreview();
-    if (toast) toast.textContent = "";
   }
 
   function renderSymbolsAndSpaces() {
@@ -1551,7 +1354,7 @@
               return `
                 <button type="button" id="${id}" class="symbol-tile" onclick="copySymbolItem(${gIdx}, ${sIdx}, '${id}')">
                   <span class="symbol-char">${safeSym}</span>
-                  <span class="symbol-tag">COPY + GHÉP</span>
+                  <span class="symbol-tag">COPY</span>
                 </button>
               `;
             }).join('')}
@@ -1564,7 +1367,6 @@
   function copyBlankSpace(idx) {
     const sp = FF_BLANK_SPACES[idx];
     if (!sp) return;
-    appendToDraftName(sp.value);
     copyToClipboard(sp.value).then(() => {
       const btn = document.getElementById(`copySpaceBtn_${idx}`);
       const toast = document.getElementById('symbolToast');
@@ -1576,7 +1378,7 @@
           btn.classList.remove('copied');
         }, 1100);
       }
-      if (toast) toast.textContent = `Đã copy & thêm "${sp.title}" vào khung ghép tên.`;
+      if (toast) toast.textContent = `Đã copy "${sp.title}" vào bộ nhớ tạm!`;
     });
   }
 
@@ -1584,7 +1386,6 @@
     const grp = FF_SYMBOL_GROUPS[gIdx];
     const sym = grp && grp.items[sIdx];
     if (!sym) return;
-    appendToDraftName(sym);
     copyToClipboard(sym).then(() => {
       const tile = document.getElementById(tileId);
       const toast = document.getElementById('symbolToast');
@@ -1594,17 +1395,16 @@
         if (tag) tag.textContent = "ĐÃ CHÉP";
         setTimeout(() => {
           tile.classList.remove('copied');
-          if (tag) tag.textContent = "COPY + GHÉP";
+          if (tag) tag.textContent = "COPY";
         }, 1100);
       }
-      if (toast) toast.textContent = `Đã copy & thêm "${sym}" vào khung ghép tên.`;
+      if (toast) toast.textContent = `Đã copy "${sym}" vào bộ nhớ tạm!`;
     });
   }
 
   initContinuousSnow();
   renderColorCells();
   renderSymbolsAndSpaces();
-  updateZoomMaxPreview();
 </script>
 
 </body>
