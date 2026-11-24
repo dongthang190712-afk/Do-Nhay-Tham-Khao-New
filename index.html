@@ -769,8 +769,8 @@
           </button>
         </div>
 
-        <label for="playerId" style="font-size:13px;">ID Tài Khoản (bắt buộc từ 8 chữ số trở lên)</label>
-        <input type="text" id="playerId" inputmode="numeric" placeholder="Ví dụ: 12345678" />
+        <label for="playerId" style="font-size:13px;">Nhập ID Tài Khoản (UID)</label>
+        <input type="text" id="playerId" inputmode="numeric" placeholder="Nhập UID của bạn..." />
 
         <label for="kcPackage" style="font-size:13px;">Gói đã chọn</label>
         <select id="kcPackage" onchange="syncPriceCardSelection()">
@@ -1015,6 +1015,25 @@
     try {
       localStorage.setItem(OTP_LIMIT_STORAGE_KEY, JSON.stringify(store));
     } catch (_) {}
+  }
+
+  function resetEmailOtpLimit(email) {
+    const clean = (email || "").trim().toLowerCase();
+    if (!clean) return;
+    const store = getOtpLimitStore();
+    delete store[clean];
+    saveOtpLimitStore(store);
+
+    if (otpCooldownTimer) {
+      clearInterval(otpCooldownTimer);
+      otpCooldownTimer = null;
+    }
+
+    const btn = document.getElementById('btnSendKcOtp');
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Gửi mã OTP";
+    }
   }
 
   function formatRemainingTime(totalSeconds) {
@@ -1366,6 +1385,8 @@
       status.textContent = "Mã OTP không chính xác.";
       return;
     }
+    resetEmailOtpLimit(currentEmail);
+    generatedOTP = "";
     document.getElementById('shopStage').classList.add('unlocked');
     status.style.color = "#00f0ff";
     status.textContent = `Đã xác minh ${currentEmail}. Bạn có thể chọn gói nạp bên dưới.`;
@@ -1378,7 +1399,7 @@
 
     if (!/^\d{8,}$/.test(idVal)) {
       status.style.color = "#ff6b86";
-      status.textContent = "ID tài khoản phải gồm ít nhất 8 chữ số.";
+      status.textContent = "UID chưa đủ 8 chữ số, vui lòng kiểm tra lại.";
       return;
     }
 
