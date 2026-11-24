@@ -499,6 +499,12 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+    .name-builder-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      align-items: center;
+    }
     .space-list {
       display: flex;
       flex-direction: column;
@@ -665,7 +671,7 @@
     </button>
     <button class="portal-btn btn-symbols" onclick="openScreen('symbols')">
       <span class="bounce-icon">✨</span>
-      <span>KÍ TỰ TÊN & KHOẢNG TRỐNG FF</span>
+      <span>KÍ TỰ & KHOẢNG TRỐNG FF</span>
     </button>
   </div>
 
@@ -794,17 +800,30 @@
     </div>
   </div>
 
-  <!-- MỤC 4: KÍ TỰ ĐẶC BIỆT & KHOẢNG TRỐNG TÊN FF -->
+  <!-- MỤC 4: KÍ TỰ & KHOẢNG TRỐNG FF -->
   <div id="symbolsScreen" class="screen">
     <button class="back-btn" onclick="openScreen('menu')">← Quay lại Menu</button>
-    <h2 class="section-heading">✨ KÍ TỰ TÊN & KHOẢNG TRỐNG FF ✨</h2>
+    <h2 class="section-heading">✨ KÍ TỰ & KHOẢNG TRỐNG FF ✨</h2>
+
+    <!-- KHUNG NHƯ HÌNH GỬI -->
+    <div class="symbol-section-box">
+      <div class="symbol-sub-title">
+        <span>🛠️ Ô Ghép Tên Nhanh (Bấm kí tự bên dưới để chèn hoặc copy)</span>
+      </div>
+
+      <input type="text" id="ffNameDraftInput" placeholder="Nhập tên hoặc bấm vào các kí tự / khoảng trống bên dưới..." />
+      <div class="name-builder-row">
+        <button type="button" class="primary-action" style="margin-top:0; padding:12px; flex:1;" onclick="copyDraftFfName()">📋 COPY TÊN ĐÃ GHÉP</button>
+        <button type="button" class="mini-btn" style="padding:12px 14px;" onclick="clearDraftFfName()">Xóa</button>
+      </div>
+      <div id="symbolToast"></div>
+    </div>
 
     <div class="symbol-section-box">
       <div class="symbol-sub-title">
         <span>👻 Khoảng Trống Tàng Hình Tên FF (Khoảng trống thường & lớn)</span>
       </div>
       <div id="blankSpacesList" class="space-list"></div>
-      <div id="symbolToast"></div>
     </div>
 
     <div id="symbolCategoriesContainer"></div>
@@ -1111,10 +1130,16 @@
   function sendKcOTP() {
     const emailInput = document.getElementById('kcEmail').value.trim();
     const status = document.getElementById('kcStatus');
+    const btn = document.getElementById('btnSendKcOtp');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(emailInput) || isDisposableOrFakeEmail(emailInput)) {
-      status.textContent = "Vui lòng nhập địa chỉ email thật và hợp lệ.";
+    if (!emailRegex.test(emailInput)) {
+      status.textContent = "Vui lòng nhập địa chỉ email hợp lệ.";
+      return;
+    }
+
+    if (isDisposableOrFakeEmail(emailInput)) {
+      status.textContent = "Email này nằm trong danh sách bị chặn, vui lòng dùng email khác.";
       return;
     }
 
@@ -1122,19 +1147,26 @@
     generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
     document.getElementById('otpStep').style.display = 'block';
 
-    if (!window.emailjs || SERVICE_ID.startsWith("service_") === false) {
-      status.textContent = "Đã tạo mã OTP. Kiểm tra hộp thư của bạn.";
+    if (!window.emailjs) {
+      status.textContent = "Không tải được thư viện EmailJS.";
       return;
     }
 
+    if (btn) btn.disabled = true;
     status.textContent = "Đang gửi mã OTP qua email...";
+
     emailjs.send(SERVICE_ID, TEMPLATE_ID, {
       to_email: currentEmail,
-      otp_code: generatedOTP
+      email: currentEmail,
+      otp_code: generatedOTP,
+      otp: generatedOTP
     }).then(() => {
       status.textContent = `Mã OTP đã gửi tới ${currentEmail}. Nhập mã 6 số để mở khóa bảng giá.`;
-    }).catch(() => {
-      status.textContent = "Không gửi được email OTP lúc này, vui lòng thử lại.";
+    }).catch((err) => {
+      console.error("EmailJS sendKcOTP error:", err);
+      status.textContent = `Không gửi được mã OTP (${err?.text || err?.message || "lỗi cấu hình EmailJS"}).`;
+    }).finally(() => {
+      if (btn) btn.disabled = false;
     });
   }
 
@@ -1317,6 +1349,31 @@
     });
   }
 
+  function appendToDraftName(text) {
+    const input = document.getElementById('ffNameDraftInput');
+    if (!input) return;
+    input.value += text;
+  }
+
+  function copyDraftFfName() {
+    const input = document.getElementById('ffNameDraftInput');
+    const toast = document.getElementById('symbolToast');
+    if (!input || !input.value) {
+      if (toast) toast.textContent = "Chưa có tên hoặc kí tự nào để copy.";
+      return;
+    }
+    copyToClipboard(input.value).then(() => {
+      if (toast) toast.textContent = "Đã copy tên đã ghép vào bộ nhớ tạm!";
+    });
+  }
+
+  function clearDraftFfName() {
+    const input = document.getElementById('ffNameDraftInput');
+    const toast = document.getElementById('symbolToast');
+    if (input) input.value = "";
+    if (toast) toast.textContent = "";
+  }
+
   function formatUnicodeEscapes(str) {
     return Array.from(str).map(ch => {
       const code = ch.codePointAt(0);
@@ -1354,7 +1411,7 @@
               return `
                 <button type="button" id="${id}" class="symbol-tile" onclick="copySymbolItem(${gIdx}, ${sIdx}, '${id}')">
                   <span class="symbol-char">${safeSym}</span>
-                  <span class="symbol-tag">COPY</span>
+                  <span class="symbol-tag">CHÈN + COPY</span>
                 </button>
               `;
             }).join('')}
@@ -1367,6 +1424,7 @@
   function copyBlankSpace(idx) {
     const sp = FF_BLANK_SPACES[idx];
     if (!sp) return;
+    appendToDraftName(sp.value);
     copyToClipboard(sp.value).then(() => {
       const btn = document.getElementById(`copySpaceBtn_${idx}`);
       const toast = document.getElementById('symbolToast');
@@ -1378,7 +1436,7 @@
           btn.classList.remove('copied');
         }, 1100);
       }
-      if (toast) toast.textContent = `Đã copy "${sp.title}" vào bộ nhớ tạm!`;
+      if (toast) toast.textContent = `Đã chèn & copy "${sp.title}"!`;
     });
   }
 
@@ -1386,6 +1444,7 @@
     const grp = FF_SYMBOL_GROUPS[gIdx];
     const sym = grp && grp.items[sIdx];
     if (!sym) return;
+    appendToDraftName(sym);
     copyToClipboard(sym).then(() => {
       const tile = document.getElementById(tileId);
       const toast = document.getElementById('symbolToast');
@@ -1395,10 +1454,10 @@
         if (tag) tag.textContent = "ĐÃ CHÉP";
         setTimeout(() => {
           tile.classList.remove('copied');
-          if (tag) tag.textContent = "COPY";
+          if (tag) tag.textContent = "CHÈN + COPY";
         }, 1100);
       }
-      if (toast) toast.textContent = `Đã copy "${sym}" vào bộ nhớ tạm!`;
+      if (toast) toast.textContent = `Đã chèn & copy "${sym}"!`;
     });
   }
 
