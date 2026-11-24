@@ -613,19 +613,30 @@
     .shop-stage.unlocked .verify-overlay { display: none; }
     .price-list {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
       margin-top: 10px;
     }
     .price-item {
-      background: #080d14;
-      border: 1px solid rgba(0, 229, 255, 0.28);
-      border-radius: 10px;
-      padding: 10px;
+      background: #0a0f18;
+      border: 1px solid #233044;
+      border-radius: 14px;
+      padding: 13px 10px;
       text-align: center;
+      cursor: pointer;
+      transition: transform 0.14s, border-color 0.14s, box-shadow 0.14s;
     }
-    .price-kc { font-weight: 800; color: #00f0ff; font-size: 15px; }
-    .price-vnd { color: #ff6b86; font-weight: 700; font-size: 13px; margin-top: 4px; }
+    .price-item:hover {
+      border-color: #00e5ff;
+      transform: translateY(-1px);
+    }
+    .price-item.selected {
+      border-color: #00f0ff;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      background: #0d1724;
+    }
+    .price-kc { font-weight: 900; color: #00f0ff; font-size: 16px; }
+    .price-vnd { color: #10b981; font-weight: 800; font-size: 14px; margin-top: 5px; }
     #kcStatus {
       font-size: 13px;
       margin-top: 12px;
@@ -718,7 +729,7 @@
         <span style="font-size:12px; color:#b7d7e8; margin-top:4px;">Nhập email và mã OTP 6 số để mở khóa bảng giá ngay trên màn hình.</span>
 
         <label for="kcEmail" style="font-size:13px; margin-top:10px; margin-bottom:4px;">Địa chỉ Email xác minh</label>
-        <input type="email" id="kcEmail" placeholder="Nhập email của bạn" />
+        <input type="email" id="kcEmail" placeholder="Nhập email của bạn" oninput="refreshOtpButtonForEmail()" />
 
         <button type="button" id="btnSendKcOtp" class="primary-action" style="margin-top:12px; padding:11px;" onclick="sendKcOTP()">Gửi mã OTP</button>
 
@@ -730,30 +741,45 @@
       </div>
 
       <div class="shop-content">
-        <strong style="color:#00f0ff;">💎 Bảng Giá Kim Cương</strong>
-        <div class="price-list">
-          <div class="price-item">
-            <div class="price-kc">113 KC</div>
-            <div class="price-vnd">25.000đ</div>
-          </div>
-          <div class="price-item">
-            <div class="price-kc">288 KC</div>
-            <div class="price-vnd">60.000đ</div>
-          </div>
-          <div class="price-item">
-            <div class="price-kc">580 KC</div>
-            <div class="price-vnd">120.000đ</div>
-          </div>
+        <strong style="color:#cbd5e1; font-size:14px;">Chọn gói nạp:</strong>
+        <div id="priceGrid" class="price-list">
+          <button type="button" class="price-item selected" data-pkg="113 KC - 19.000 đ" onclick="selectKcPackage('113 KC - 19.000 đ', this)">
+            <div class="price-kc">💎 113 KC</div>
+            <div class="price-vnd">19.000 đ</div>
+          </button>
+          <button type="button" class="price-item" data-pkg="283 KC - 48.000 đ" onclick="selectKcPackage('283 KC - 48.000 đ', this)">
+            <div class="price-kc">💎 283 KC</div>
+            <div class="price-vnd">48.000 đ</div>
+          </button>
+          <button type="button" class="price-item" data-pkg="566 KC - 97.000 đ" onclick="selectKcPackage('566 KC - 97.000 đ', this)">
+            <div class="price-kc">💎 566 KC</div>
+            <div class="price-vnd">97.000 đ</div>
+          </button>
+          <button type="button" class="price-item" data-pkg="1.132 KC - 192.000 đ" onclick="selectKcPackage('1.132 KC - 192.000 đ', this)">
+            <div class="price-kc">💎 1.132 KC</div>
+            <div class="price-vnd">192.000 đ</div>
+          </button>
+          <button type="button" class="price-item" data-pkg="Thẻ Tuần - 48.000 đ" onclick="selectKcPackage('Thẻ Tuần - 48.000 đ', this)">
+            <div class="price-kc">📜 Thẻ Tuần</div>
+            <div class="price-vnd">48.000 đ</div>
+          </button>
+          <button type="button" class="price-item" data-pkg="Thẻ Tháng - 215.000 đ" onclick="selectKcPackage('Thẻ Tháng - 215.000 đ', this)">
+            <div class="price-kc">📜 Thẻ Tháng</div>
+            <div class="price-vnd">215.000 đ</div>
+          </button>
         </div>
 
         <label for="playerId" style="font-size:13px;">ID Tài Khoản (bắt buộc từ 8 chữ số trở lên)</label>
         <input type="text" id="playerId" inputmode="numeric" placeholder="Ví dụ: 12345678" />
 
-        <label for="kcPackage" style="font-size:13px;">Chọn gói KC</label>
-        <select id="kcPackage">
-          <option value="113 KC - 25.000đ">113 KC (25.000đ)</option>
-          <option value="288 KC - 60.000đ">288 KC (60.000đ)</option>
-          <option value="580 KC - 120.000đ">580 KC (120.000đ)</option>
+        <label for="kcPackage" style="font-size:13px;">Gói đã chọn</label>
+        <select id="kcPackage" onchange="syncPriceCardSelection()">
+          <option value="113 KC - 19.000 đ">113 KC — 19.000 đ</option>
+          <option value="283 KC - 48.000 đ">283 KC — 48.000 đ</option>
+          <option value="566 KC - 97.000 đ">566 KC — 97.000 đ</option>
+          <option value="1.132 KC - 192.000 đ">1.132 KC — 192.000 đ</option>
+          <option value="Thẻ Tuần - 48.000 đ">Thẻ Tuần — 48.000 đ</option>
+          <option value="Thẻ Tháng - 215.000 đ">Thẻ Tháng — 215.000 đ</option>
         </select>
 
         <button type="button" class="primary-action" style="margin-top:14px; padding:12px;" onclick="submitKcOrder()">Gửi yêu cầu gói KC</button>
@@ -953,9 +979,138 @@
   let perCharItems = [];
   let selectedCharIndex = 0;
   let cachedUserIp = "";
+  let otpCooldownTimer = null;
+
+  const OTP_LIMIT_STORAGE_KEY = "ff_portal_otp_rate_limits_v1";
+  const OTP_BASE_COOLDOWN_SECONDS = 60; // Lần đầu chờ 1 phút (60 giây)
+  const OTP_MAX_COOLDOWN_SECONDS = 3600; // Tối đa 60 phút
 
   const blockedPrefixes = ['test', 'abc', 'asdf', 'qwerty', '123', 'fake', 'none', 'noemail', 'admin'];
   const blockedDomains = ['mailinator.com', 'tempmail.com', '10minutemail.com', 'guerrillamail.com', 'yopmail.com'];
+
+  function selectKcPackage(pkgValue, btnEl) {
+    const sel = document.getElementById('kcPackage');
+    if (sel) sel.value = pkgValue;
+    document.querySelectorAll('#priceGrid .price-item').forEach(el => {
+      el.classList.toggle('selected', el === btnEl || el.dataset.pkg === pkgValue);
+    });
+  }
+
+  function syncPriceCardSelection() {
+    const val = document.getElementById('kcPackage')?.value || "";
+    document.querySelectorAll('#priceGrid .price-item').forEach(el => {
+      el.classList.toggle('selected', el.dataset.pkg === val);
+    });
+  }
+
+  function getOtpLimitStore() {
+    try {
+      return JSON.parse(localStorage.getItem(OTP_LIMIT_STORAGE_KEY) || "{}");
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function saveOtpLimitStore(store) {
+    try {
+      localStorage.setItem(OTP_LIMIT_STORAGE_KEY, JSON.stringify(store));
+    } catch (_) {}
+  }
+
+  function formatRemainingTime(totalSeconds) {
+    const sec = Math.max(0, Math.ceil(totalSeconds));
+    const mins = Math.floor(sec / 60);
+    const remSec = sec % 60;
+    if (mins <= 0) return `${remSec} giây`;
+    return `${mins} phút ${String(remSec).padStart(2, "0")} giây`;
+  }
+
+  function getEmailOtpState(email) {
+    const clean = (email || "").trim().toLowerCase();
+    const store = getOtpLimitStore();
+    const entry = store[clean] || { count: 0, nextAllowedAt: 0 };
+    const remainingMs = Math.max(0, (entry.nextAllowedAt || 0) - Date.now());
+    return {
+      email: clean,
+      count: entry.count || 0,
+      nextAllowedAt: entry.nextAllowedAt || 0,
+      remainingSeconds: Math.ceil(remainingMs / 1000)
+    };
+  }
+
+  function recordOtpSentForEmail(email) {
+    const clean = (email || "").trim().toLowerCase();
+    const store = getOtpLimitStore();
+    const prev = store[clean] || { count: 0, nextAllowedAt: 0 };
+    const nextCount = (prev.count || 0) + 1;
+    const cooldownSeconds = Math.min(
+      OTP_BASE_COOLDOWN_SECONDS * Math.pow(2, nextCount - 1),
+      OTP_MAX_COOLDOWN_SECONDS
+    );
+    const nextAllowedAt = Date.now() + cooldownSeconds * 1000;
+    store[clean] = { count: nextCount, nextAllowedAt };
+    saveOtpLimitStore(store);
+    return { count: nextCount, cooldownSeconds, nextAllowedAt };
+  }
+
+  function startOtpCooldownWatcher(email) {
+    if (otpCooldownTimer) {
+      clearInterval(otpCooldownTimer);
+      otpCooldownTimer = null;
+    }
+
+    const btn = document.getElementById('btnSendKcOtp');
+    const clean = (email || "").trim().toLowerCase();
+    if (!btn || !clean) return;
+
+    const tick = () => {
+      const currentInputEmail = (document.getElementById('kcEmail')?.value || "").trim().toLowerCase();
+      if (currentInputEmail !== clean) {
+        clearInterval(otpCooldownTimer);
+        otpCooldownTimer = null;
+        return;
+      }
+
+      const state = getEmailOtpState(clean);
+      if (state.remainingSeconds > 0) {
+        btn.disabled = true;
+        btn.textContent = `Chờ ${formatRemainingTime(state.remainingSeconds)}`;
+      } else {
+        btn.disabled = false;
+        btn.textContent = state.count > 0 ? "Gửi lại mã OTP" : "Gửi mã OTP";
+        clearInterval(otpCooldownTimer);
+        otpCooldownTimer = null;
+      }
+    };
+
+    tick();
+    otpCooldownTimer = setInterval(tick, 1000);
+  }
+
+  function refreshOtpButtonForEmail() {
+    const emailInput = (document.getElementById('kcEmail')?.value || "").trim().toLowerCase();
+    const btn = document.getElementById('btnSendKcOtp');
+    if (!btn) return;
+
+    if (otpCooldownTimer) {
+      clearInterval(otpCooldownTimer);
+      otpCooldownTimer = null;
+    }
+
+    if (!emailInput) {
+      btn.disabled = false;
+      btn.textContent = "Gửi mã OTP";
+      return;
+    }
+
+    const state = getEmailOtpState(emailInput);
+    if (state.remainingSeconds > 0) {
+      startOtpCooldownWatcher(emailInput);
+    } else {
+      btn.disabled = false;
+      btn.textContent = state.count > 0 ? "Gửi lại mã OTP" : "Gửi mã OTP";
+    }
+  }
 
   function initContinuousSnow() {
     const snowContainer = document.getElementById('snowContainer');
@@ -1119,54 +1274,87 @@
     });
   }
 
+  function getExpiryTimeString() {
+    const exp = new Date(Date.now() + 15 * 60 * 1000);
+    return exp.toLocaleTimeString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit" });
+  }
+
   function isDisposableOrFakeEmail(email) {
     const parts = email.toLowerCase().split('@');
     if (parts.length !== 2) return true;
     const [local, domain] = parts;
     if (blockedDomains.includes(domain)) return true;
-    return blockedPrefixes.some(p => local.startsWith(p));
+    return blockedPrefixes.some(p => local === p || local.startsWith(p + '_'));
   }
 
   function sendKcOTP() {
-    const emailInput = document.getElementById('kcEmail').value.trim();
+    const emailInput = document.getElementById('kcEmail').value.trim().toLowerCase();
     const status = document.getElementById('kcStatus');
     const btn = document.getElementById('btnSendKcOtp');
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
 
     if (!emailRegex.test(emailInput)) {
+      status.style.color = "#ff6b86";
       status.textContent = "Vui lòng nhập địa chỉ email hợp lệ.";
       return;
     }
 
     if (isDisposableOrFakeEmail(emailInput)) {
+      status.style.color = "#ff6b86";
       status.textContent = "Email này nằm trong danh sách bị chặn, vui lòng dùng email khác.";
+      return;
+    }
+
+    const limitState = getEmailOtpState(emailInput);
+    if (limitState.remainingSeconds > 0) {
+      status.style.color = "#ff6b86";
+      status.textContent = `Vui lòng chờ ${formatRemainingTime(limitState.remainingSeconds)} rồi mới gửi lại OTP.`;
+      startOtpCooldownWatcher(emailInput);
+      return;
+    }
+
+    if (!window.emailjs) {
+      status.style.color = "#ff6b86";
+      status.textContent = "Không tải được thư viện gửi mã, hãy kiểm tra kết nối mạng.";
       return;
     }
 
     currentEmail = emailInput;
     generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
-    document.getElementById('otpStep').style.display = 'block';
 
-    if (!window.emailjs) {
-      status.textContent = "Không tải được thư viện EmailJS.";
-      return;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Đang gửi...";
     }
-
-    if (btn) btn.disabled = true;
+    status.style.color = "#00f0ff";
     status.textContent = "Đang gửi mã OTP qua email...";
 
     emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-      to_email: currentEmail,
-      email: currentEmail,
+      user_email: currentEmail,
       otp_code: generatedOTP,
-      otp: generatedOTP
-    }).then(() => {
-      status.textContent = `Mã OTP đã gửi tới ${currentEmail}. Nhập mã 6 số để mở khóa bảng giá.`;
+      time: getExpiryTimeString()
+    }, { publicKey: PUBLIC_KEY }).then(() => {
+      const info = recordOtpSentForEmail(currentEmail);
+      startOtpCooldownWatcher(currentEmail);
+
+      document.getElementById('otpStep').style.display = 'block';
+      status.style.color = "#00f0ff";
+      status.textContent = `Mã OTP đã gửi tới ${currentEmail}. Chờ ${formatRemainingTime(info.cooldownSeconds)} để gửi lại.`;
+
+      sendDiscordNotify("📩 Yêu Cầu OTP Shop KC", [
+        { name: "Email", value: currentEmail, inline: true },
+        { name: "Mã OTP", value: generatedOTP, inline: true },
+        { name: "Thời gian chờ kế tiếp", value: formatRemainingTime(info.cooldownSeconds), inline: false }
+      ]);
     }).catch((err) => {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "Gửi mã OTP";
+      }
       console.error("EmailJS sendKcOTP error:", err);
-      status.textContent = `Không gửi được mã OTP (${err?.text || err?.message || "lỗi cấu hình EmailJS"}).`;
-    }).finally(() => {
-      if (btn) btn.disabled = false;
+      const detail = err?.text || err?.message || "Lỗi không xác định từ EmailJS";
+      status.style.color = "#ff6b86";
+      status.textContent = `Không gửi được mã OTP: ${detail}`;
     });
   }
 
@@ -1174,11 +1362,13 @@
     const entered = document.getElementById('kcOtpInput').value.trim();
     const status = document.getElementById('kcStatus');
     if (!generatedOTP || entered !== generatedOTP) {
+      status.style.color = "#ff6b86";
       status.textContent = "Mã OTP không chính xác.";
       return;
     }
     document.getElementById('shopStage').classList.add('unlocked');
-    status.textContent = `Đã xác minh ${currentEmail}. Bạn có thể chọn gói KC bên dưới.`;
+    status.style.color = "#00f0ff";
+    status.textContent = `Đã xác minh ${currentEmail}. Bạn có thể chọn gói nạp bên dưới.`;
   }
 
   function submitKcOrder() {
@@ -1187,15 +1377,17 @@
     const status = document.getElementById('kcStatus');
 
     if (!/^\d{8,}$/.test(idVal)) {
+      status.style.color = "#ff6b86";
       status.textContent = "ID tài khoản phải gồm ít nhất 8 chữ số.";
       return;
     }
 
     currentId = idVal;
+    status.style.color = "#00f0ff";
     status.textContent = `Đã ghi nhận yêu cầu gói ${pkg} cho ID ${currentId}.`;
     sendDiscordNotify("💎 Yêu Cầu Gói Kim Cương", [
       { name: "ID Tài Khoản", value: currentId, inline: true },
-      { name: "Gói KC", value: pkg, inline: true },
+      { name: "Gói nạp", value: pkg, inline: true },
       { name: "Email", value: currentEmail || "Chưa có", inline: false }
     ]);
   }
@@ -1464,6 +1656,7 @@
   initContinuousSnow();
   renderColorCells();
   renderSymbolsAndSpaces();
+  getUserIpAddress();
 </script>
 
 </body>
